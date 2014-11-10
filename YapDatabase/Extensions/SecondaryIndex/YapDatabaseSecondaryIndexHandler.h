@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, YapDatabaseSecondaryIndexBlockType) {
 /**
  * The handler block handles extracting the column values for the secondary indexes.
  *
- * When you add or update rows in the databse the block is invoked.
+ * When you add or update rows in the database the block is invoked.
  * Your block can inspect the row and determine if it contains any values that should be added to the secondary indexes.
  * If not, the  block can simply return.
  * Otherwise the block should extract any values and add them to the given dictionary.
