@@ -251,7 +251,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
-				[self addRowid:rowid isNew:YES];
+				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 				[viewModelConnection->blockDict removeAllObjects];
 			}
 		};
@@ -283,7 +283,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
-				[self addRowid:rowid isNew:YES];
+				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 				[viewModelConnection->blockDict removeAllObjects];
 			}
 		};
@@ -316,7 +316,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
-				[self addRowid:rowid isNew:YES];
+				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 				[viewModelConnection->blockDict removeAllObjects];
 			}
 		};
@@ -349,7 +349,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
-				[self addRowid:rowid isNew:YES];
+				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 				[viewModelConnection->blockDict removeAllObjects];
 			}
 		};
@@ -370,6 +370,16 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		}
 	}
 	return YES;
+}
+
+- (void)addRowId:(int64_t)rowid forMappedPrimaryKeyTuple:(NSArray *)mappedPrimaryKeyTuple {
+    int64_t existingRowid = [self rowIdForRowWithValue:mappedPrimaryKeyTuple[1] inColumn:mappedPrimaryKeyTuple[0]];
+    if (existingRowid != -1)
+    {
+        rowid = existingRowid;
+    }
+
+    [self addRowid:rowid isNew:existingRowid == -1];
 }
 
 /**
@@ -708,13 +718,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		// Add values to index.
 		// This was an insert operation, so we know we can insert rather than update.
 
-        int64_t existingRowid = [self rowIdForRowWithValue:mappedPrimaryKeyTuple[1] inColumn:mappedPrimaryKeyTuple[0]];
-        if (existingRowid != -1)
-        {
-            rowid = existingRowid;
-        }
-
-		[self addRowid:rowid isNew:existingRowid == -1];
+        [self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 		[viewModelConnection->blockDict removeAllObjects];
 	}
 }
@@ -787,7 +791,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		// Add values to index (or update them).
 		// This was an update operation, so we need to insert or update.
 
-		[self addRowid:rowid isNew:NO];
+        [self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 		[viewModelConnection->blockDict removeAllObjects];
 	}
 }
@@ -859,7 +863,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			// Add values to index (or update them).
 			// This was an update operation, so we need to insert or update.
 
-			[self addRowid:rowid isNew:NO];
+            [self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 			[viewModelConnection->blockDict removeAllObjects];
 		}
 	}
@@ -932,7 +936,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			// Add values to index (or update them).
 			// This was an update operation, so we need to insert or update.
 
-			[self addRowid:rowid isNew:NO];
+            [self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
 			[viewModelConnection->blockDict removeAllObjects];
 		}
 	}
