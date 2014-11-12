@@ -403,10 +403,28 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	YDBLogAutoTrace();
 
 	sqlite3_stmt *statement = NULL;
+    NSMutableArray *columns = [NSMutableArray new];
 	if (isNew)
+    {
 		statement = [viewModelConnection insertStatement];
-	else
-		statement = [viewModelConnection updateStatement];
+        for (YapDatabaseViewModelColumn *column in viewModelConnection->viewModel->setup)
+        {
+            [columns addObject:column];
+        }
+	}
+    else
+    {
+        NSArray *columnNames = [viewModelConnection->blockDict allKeys];
+
+        for (NSString *columnName in columnNames)
+        {
+            YapDatabaseViewModelColumn *column = [viewModelConnection->viewModel->setup columnWithName:columnName];
+            if (column) {
+                [columns addObject:column];
+            }
+        }
+		statement = [viewModelConnection updateStatementWithColumns:columns];
+    }
 
 	if (statement == NULL)
 		return;
@@ -416,10 +434,12 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 	int i = 1;
 
-	sqlite3_bind_int64(statement, i, rowid);
-	i++;
+    if (isNew) {
+        sqlite3_bind_int64(statement, i, rowid);
+        i++;
+    }
 
-	for (YapDatabaseViewModelColumn *column in viewModelConnection->viewModel->setup)
+	for (YapDatabaseViewModelColumn *column in columns)
 	{
 		id columnValue = [viewModelConnection->blockDict objectForKey:column.name];
 		if (columnValue && columnValue != [NSNull null])
@@ -482,6 +502,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 		i++;
 	}
+
+    if (!isNew) {
+        sqlite3_bind_int64(statement, i, (sqlite3_int64)rowid);
+    }
 
 	int status = sqlite3_step(statement);
 	if (status != SQLITE_DONE)
@@ -983,10 +1007,11 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 - (int64_t)rowIdForRowWithValue:(id)value inColumn:(NSString *)column
 {
-    YapDatabaseQuery *query = [YapDatabaseQuery queryWithFormat:@"WHERE \"%@\" = \"%@\"", column, value];
+    NSString *whereQueryFormat = [NSString stringWithFormat:@"WHERE %@=?", column];
+    YapDatabaseQuery *query = [YapDatabaseQuery queryWithFormat:whereQueryFormat, value];
     __block int64_t rowId = -1;
-    [self _enumerateRowidsMatchingQuery:query usingBlock:^(int64_t rowid, BOOL *stop) {
-        rowId = rowId;
+    [self _enumerateRowidsMatchingQuery:query usingBlock:^(int64_t existingRowId, BOOL *stop) {
+        rowId = existingRowId;
         *stop = YES;
     }];
     return rowId;

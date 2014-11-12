@@ -17,6 +17,8 @@ typedef NS_ENUM(NSInteger, YapDatabaseViewModelType) {
 
 - (NSUInteger)count;
 - (YapDatabaseViewModelColumn *)columnAtIndex:(NSUInteger)index;
+- (YapDatabaseViewModelColumn *)columnWithName:(NSString *)name;
+
 
 - (NSArray *)columnNames;
 

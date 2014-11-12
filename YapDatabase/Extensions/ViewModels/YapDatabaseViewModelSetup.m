@@ -128,6 +128,16 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		return nil;
 }
 
+- (YapDatabaseViewModelColumn *)columnWithName:(NSString *)name {
+    for (YapDatabaseViewModelColumn *column in setup)
+	{
+		if ([column.name isEqualToString:name]) {
+            return column;
+        }
+	}
+    return nil;
+}
+
 - (NSArray *)columnNames
 {
 	NSMutableArray *columnNames = [NSMutableArray arrayWithCapacity:[setup count]];
