@@ -237,6 +237,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
 
 	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+    __block NSArray *mappedPrimaryKeyTuple;
 
 	if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey)
 	{
@@ -246,7 +247,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, BOOL *stop);
 		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, BOOL *stop) {
 
-			viewModelBlock(viewModelConnection->blockDict, collection, key);
+			viewModelBlock(viewModelConnection->blockDict, collection, key, &mappedPrimaryKeyTuple);
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
@@ -278,7 +279,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop);
 		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop) {
 
-			viewModelBlock(viewModelConnection->blockDict, collection, key, object);
+			viewModelBlock(viewModelConnection->blockDict, collection, key, object, &mappedPrimaryKeyTuple);
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
@@ -311,7 +312,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop);
 		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop) {
 
-			viewModelBlock(viewModelConnection->blockDict, collection, key, metadata);
+			viewModelBlock(viewModelConnection->blockDict, collection, key, metadata, &mappedPrimaryKeyTuple);
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
@@ -344,7 +345,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop);
 		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop) {
 
-			viewModelBlock(viewModelConnection->blockDict, collection, key, object, metadata);
+			viewModelBlock(viewModelConnection->blockDict, collection, key, object, metadata, &mappedPrimaryKeyTuple);
 
 			if ([viewModelConnection->blockDict count] > 0)
 			{
@@ -635,6 +636,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 	__unsafe_unretained NSString *collection = collectionKey.collection;
 	__unsafe_unretained NSString *key = collectionKey.key;
+    NSArray *mappedPrimaryKeyTuple;
 
 	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
 	if (allowedCollections && ![allowedCollections isAllowed:collection])
@@ -649,28 +651,28 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		__unsafe_unretained YapDatabaseViewModelWithKeyBlock block =
         (YapDatabaseViewModelWithKeyBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key);
+		block(viewModelConnection->blockDict, collection, key, &mappedPrimaryKeyTuple);
 	}
 	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
 	{
 		__unsafe_unretained YapDatabaseViewModelWithObjectBlock block =
         (YapDatabaseViewModelWithObjectBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key, object);
+		block(viewModelConnection->blockDict, collection, key, object, &mappedPrimaryKeyTuple);
 	}
 	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
 	{
 		__unsafe_unretained YapDatabaseViewModelWithMetadataBlock block =
         (YapDatabaseViewModelWithMetadataBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key, metadata);
+		block(viewModelConnection->blockDict, collection, key, metadata, &mappedPrimaryKeyTuple);
 	}
 	else
 	{
 		__unsafe_unretained YapDatabaseViewModelWithRowBlock block =
         (YapDatabaseViewModelWithRowBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key, object, metadata);
+		block(viewModelConnection->blockDict, collection, key, object, metadata, &mappedPrimaryKeyTuple);
 	}
 
 	if ([viewModelConnection->blockDict count] == 0)
@@ -682,7 +684,13 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		// Add values to index.
 		// This was an insert operation, so we know we can insert rather than update.
 
-		[self addRowid:rowid isNew:YES];
+        int64_t existingRowid = [self rowIdForRowWithValue:mappedPrimaryKeyTuple[1] inColumn:mappedPrimaryKeyTuple[0]];
+        if (existingRowid != -1)
+        {
+            rowid = existingRowid;
+        }
+
+		[self addRowid:rowid isNew:existingRowid == -1];
 		[viewModelConnection->blockDict removeAllObjects];
 	}
 }
@@ -704,6 +712,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	__unsafe_unretained NSString *key = collectionKey.key;
 
 	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+
+    NSArray *mappedPrimaryKeyTuple;
+
 	if (allowedCollections && ![allowedCollections isAllowed:collection])
 	{
 		return;
@@ -716,28 +727,28 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		__unsafe_unretained YapDatabaseViewModelWithKeyBlock block =
         (YapDatabaseViewModelWithKeyBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key);
+		block(viewModelConnection->blockDict, collection, key, &mappedPrimaryKeyTuple);
 	}
 	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
 	{
 		__unsafe_unretained YapDatabaseViewModelWithObjectBlock block =
         (YapDatabaseViewModelWithObjectBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key, object);
+		block(viewModelConnection->blockDict, collection, key, object, &mappedPrimaryKeyTuple);
 	}
 	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
 	{
 		__unsafe_unretained YapDatabaseViewModelWithMetadataBlock block =
         (YapDatabaseViewModelWithMetadataBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key, metadata);
+		block(viewModelConnection->blockDict, collection, key, metadata, &mappedPrimaryKeyTuple);
 	}
 	else
 	{
 		__unsafe_unretained YapDatabaseViewModelWithRowBlock block =
         (YapDatabaseViewModelWithRowBlock)viewModel->block;
 
-		block(viewModelConnection->blockDict, collection, key, object, metadata);
+		block(viewModelConnection->blockDict, collection, key, object, metadata, &mappedPrimaryKeyTuple);
 	}
 
 	if ([viewModelConnection->blockDict count] == 0)
@@ -771,6 +782,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	__unsafe_unretained NSString *key = collectionKey.key;
 
 	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+
+    NSArray *mappedPrimaryKeyTuple;
+
 	if (allowedCollections && ![allowedCollections isAllowed:collection])
 	{
 		return;
@@ -798,7 +812,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			__unsafe_unretained YapDatabaseViewModelWithObjectBlock block =
             (YapDatabaseViewModelWithObjectBlock)viewModel->block;
 
-			block(viewModelConnection->blockDict, collection, key, object);
+			block(viewModelConnection->blockDict, collection, key, object, &mappedPrimaryKeyTuple);
 		}
 		else
 		{
@@ -806,7 +820,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
             (YapDatabaseViewModelWithRowBlock)viewModel->block;
 
 			metadata = [databaseTransaction objectForCollectionKey:collectionKey withRowid:rowid];
-			block(viewModelConnection->blockDict, collection, key, object, metadata);
+			block(viewModelConnection->blockDict, collection, key, object, metadata, &mappedPrimaryKeyTuple);
 		}
 
 		if ([viewModelConnection->blockDict count] == 0)
@@ -841,6 +855,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	__unsafe_unretained NSString *key = collectionKey.key;
 
 	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = ViewModel->options.allowedCollections;
+
+    NSArray *mappedPrimaryKeyTuple;
+
 	if (allowedCollections && ![allowedCollections isAllowed:collection])
 	{
 		return;
@@ -868,7 +885,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			__unsafe_unretained YapDatabaseViewModelWithMetadataBlock block =
             (YapDatabaseViewModelWithMetadataBlock)ViewModel->block;
 
-			block(viewModelConnection->blockDict, collection, key, metadata);
+			block(viewModelConnection->blockDict, collection, key, metadata, &mappedPrimaryKeyTuple);
 		}
 		else
 		{
@@ -876,7 +893,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
             (YapDatabaseViewModelWithRowBlock)ViewModel->block;
 
 			object = [databaseTransaction objectForCollectionKey:collectionKey withRowid:rowid];
-			block(viewModelConnection->blockDict, collection, key, object, metadata);
+			block(viewModelConnection->blockDict, collection, key, object, metadata, &mappedPrimaryKeyTuple);
 		}
 
 		if ([viewModelConnection->blockDict count] == 0)
@@ -964,6 +981,16 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	[self removeAllRowids];
 }
 
+- (int64_t)rowIdForRowWithValue:(id)value inColumn:(NSString *)column
+{
+    YapDatabaseQuery *query = [YapDatabaseQuery queryWithFormat:@"WHERE \"%@\" = \"%@\"", column, value];
+    __block int64_t rowId = -1;
+    [self _enumerateRowidsMatchingQuery:query usingBlock:^(int64_t rowid, BOOL *stop) {
+        rowId = rowId;
+        *stop = YES;
+    }];
+    return rowId;
+}
 
 - (BOOL)_enumerateRowidsMatchingQuery:(YapDatabaseQuery *)query
                            usingBlock:(void (^)(int64_t rowid, BOOL *stop))block

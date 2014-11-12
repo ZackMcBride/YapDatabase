@@ -1,8 +1,8 @@
 #import "YapDatabaseExtension.h"
 
-@class YapDatabaseViewModelSetup;
-@class YapDatabaseViewModelHandler;
-@class YapDatabaseViewModelOptions;
+#import "YapDatabaseViewModelSetup.h"
+#import "YapDatabaseViewModelHandler.h"
+#import "YapDatabaseViewModelOptions.h"
 
 @interface YapDatabaseViewModel : YapDatabaseExtension
 

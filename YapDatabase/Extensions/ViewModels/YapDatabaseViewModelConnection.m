@@ -23,6 +23,8 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 
 #pragma mark - Object Lifecycle
 
+@synthesize viewModel = viewModel;
+
 - (instancetype)initWithViewModel:(YapDatabaseViewModel *)inViewModel
                databaseConnection:(YapDatabaseConnection *)inDatabaseConnection
 {

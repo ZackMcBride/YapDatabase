@@ -12,13 +12,13 @@ typedef NS_ENUM(NSInteger, YapDatabaseViewModelBlockType) {
 typedef id YapDatabaseViewModelBlock; // One of the YapDatabaseSecondaryIndexWith_X_Block types below.
 
 typedef void (^YapDatabaseViewModelWithKeyBlock)      \
-(NSMutableDictionary *dict, NSString *collection, NSString *key);
+(NSMutableDictionary *dict, NSString *collection, NSString *key, NSArray **mappedPrimaryKeyTuple);
 typedef void (^YapDatabaseViewModelWithObjectBlock)   \
-(NSMutableDictionary *dict, NSString *collection, NSString *key, id object);
+(NSMutableDictionary *dict, NSString *collection, NSString *key, id object, NSArray **mappedPrimaryKeyTuple);
 typedef void (^YapDatabaseViewModelWithMetadataBlock) \
-(NSMutableDictionary *dict, NSString *collection, NSString *key, id metadata);
+(NSMutableDictionary *dict, NSString *collection, NSString *key, id metadata, NSArray **mappedPrimaryKeyTuple);
 typedef void (^YapDatabaseViewModelWithRowBlock)      \
-(NSMutableDictionary *dict, NSString *collection, NSString *key, id object, id metadata);
+(NSMutableDictionary *dict, NSString *collection, NSString *key, id object, id metadata, NSArray **mappedPrimaryKeyTuple);
 
 + (instancetype)withKeyBlock:(YapDatabaseViewModelWithKeyBlock)block;
 + (instancetype)withObjectBlock:(YapDatabaseViewModelWithObjectBlock)block;

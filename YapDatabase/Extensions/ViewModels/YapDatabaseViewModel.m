@@ -51,13 +51,6 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
                                                   databaseConnection:databaseConnection];
 }
 
-- (void)mapLogicForObject:(id)object
-             inCollection:(NSString *)collection
-               connection:(YapDatabaseExtensionConnection *)connection
-{
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Override this in your subclass." userInfo:nil];
-}
-
 - (NSString *)tableName
 {
 	return [[self class] tableNameForRegisteredName:self.registeredName];
