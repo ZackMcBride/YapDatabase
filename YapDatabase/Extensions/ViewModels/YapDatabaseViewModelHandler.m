@@ -49,20 +49,4 @@
 	return handler;
 }
 
-/**
- * Helper method for supporting deprecated methods.
- * This method will disappear in the future.
- **/
-+ (instancetype)withBlock:(YapDatabaseViewModelBlock)block blockType:(YapDatabaseViewModelBlockType)blockType
-{
-	if (block == NULL) return nil;
-
-	YapDatabaseViewModelHandler *handler = [YapDatabaseViewModelHandler new];
-	handler->block = block;
-	handler->blockType = blockType;
-
-	return handler;
-}
-
-
 @end

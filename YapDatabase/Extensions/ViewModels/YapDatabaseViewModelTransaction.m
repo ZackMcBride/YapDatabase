@@ -440,7 +440,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		return;
 
 	//  isNew : INSERT            INTO "tableName" ("rowid", "column1", "column2", ...) VALUES (?, ?, ? ...);
-	// !isNew : INSERT OR REPLACE INTO "tableName" ("rowid", "column1", "column2", ...) VALUES (?, ?, ? ...);
+	// !isNew : UPDATE                 "tableName" set rowid = ?, column1 = ?, column2 = ?;
 
 	int i = 1;
 
