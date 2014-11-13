@@ -5,6 +5,4 @@
 
 @interface YapDatabaseViewModelTransaction : YapDatabaseExtensionTransaction
 
-- (int64_t)rowIdForRowWithValue:(id)value inColumn:(NSString *)column;
-
 @end

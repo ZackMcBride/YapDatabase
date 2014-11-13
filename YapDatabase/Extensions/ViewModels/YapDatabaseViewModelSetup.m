@@ -234,7 +234,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		typeStr = @"Unknown";
     }
 
-	return [NSString stringWithFormat:@"<YapDatabaseSecondaryIndexColumn: name(%@), type(%@)>", name, typeStr];
+	return [NSString stringWithFormat:@"<YapDatabaseViewModelColumn: name(%@), type(%@)>", name, typeStr];
 }
 
 @end
