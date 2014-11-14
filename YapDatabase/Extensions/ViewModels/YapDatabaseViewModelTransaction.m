@@ -443,53 +443,49 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	__unsafe_unretained NSString *key = collectionKey.key;
 
     __unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
-	if (allowedCollections && ![allowedCollections isAllowed:collection])
-	{
+	if (allowedCollections && ![allowedCollections isAllowed:collection]) {
 		return;
 	}
 
     BOOL shouldProcessInsert = [viewModel->setup.relatedCollections containsObject:collection];
 
-    if (shouldProcessInsert)
-    {
+    if (shouldProcessInsert) {
         NSString *viewModelPrimaryKey = viewModel->setup.primaryKeyForObjectInCollection(object, collection);
         id currentViewModelObject = [self viewModelObjectForPrimaryKey:viewModelPrimaryKey];
 
-        if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey)
-        {
-            __unsafe_unretained YapDatabaseViewModelWithKeyBlock block =
-            (YapDatabaseViewModelWithKeyBlock)viewModel->block;
+        if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey) {
+            __unsafe_unretained YapDatabaseViewModelWithKeyBlock block =(YapDatabaseViewModelWithKeyBlock)viewModel->block;
 
             block(currentViewModelObject, collection, key, self);
-        }
-        else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
-        {
+        } else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject) {
             __unsafe_unretained YapDatabaseViewModelWithObjectBlock block =
             (YapDatabaseViewModelWithObjectBlock)viewModel->block;
 
             block(currentViewModelObject, collection, key, object, self);
         }
-        else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
-        {
+        else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata) {
             __unsafe_unretained YapDatabaseViewModelWithMetadataBlock block =
             (YapDatabaseViewModelWithMetadataBlock)viewModel->block;
 
             block(currentViewModelObject, collection, key, metadata, self);
         }
-        else
-        {
+        else {
             __unsafe_unretained YapDatabaseViewModelWithRowBlock block =
             (YapDatabaseViewModelWithRowBlock)viewModel->block;
 
             block(currentViewModelObject, collection, key, object, metadata, self);
         }
 
-        int64_t existingRowId = [self rowIdForRowWithPrimaryKey:viewModelPrimaryKey];
-        if (existingRowId != -1) {
-            rowid = existingRowId;
+        if (currentViewModelObject) {
+            int64_t existingRowId = [self rowIdForRowWithPrimaryKey:viewModelPrimaryKey];
+            if (existingRowId != -1) {
+                rowid = existingRowId;
+            }
+
+            [self addViewModelObject:currentViewModelObject withPrimaryKey:viewModelPrimaryKey rowId:rowid];
         }
 
-        [self addViewModelObject:currentViewModelObject withPrimaryKey:viewModelPrimaryKey rowId:rowid];
+        NSLog(@".");
     }
 }
 
@@ -621,7 +617,8 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		return;
 	}
 
-	[self removeRowid:rowid];
+    //TODO Removals
+//	[self removeRowid:rowid];
 }
 
 /**
