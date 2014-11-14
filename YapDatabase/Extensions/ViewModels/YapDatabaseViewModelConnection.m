@@ -15,6 +15,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 
 @implementation YapDatabaseViewModelConnection
 {
+    sqlite3_stmt *getDataForRowidStatement;
 	sqlite3_stmt *insertStatement;
 	sqlite3_stmt *removeStatement;
 	sqlite3_stmt *removeAllStatement;
@@ -47,6 +48,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 
 - (void)_flushStatements
 {
+    sqlite_finalize_null(&getDataForRowidStatement);
 	sqlite_finalize_null(&insertStatement);
 	sqlite_finalize_null(&removeStatement);
 	sqlite_finalize_null(&removeAllStatement);
@@ -169,6 +171,27 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 {}
 
 #pragma mark - Statements
+
+- (sqlite3_stmt *)getDataForRowidStatement
+{
+	sqlite3_stmt **statement = &getDataForRowidStatement;
+	if (*statement == NULL)
+	{
+        NSString *string = [NSString stringWithFormat:@"SELECT \"data\" FROM \"%@\" WHERE \"rowid\" = ?;", [viewModel tableName]];
+		char *stmt = string.UTF8String;
+		int stmtLen = (int)strlen(stmt);
+
+		sqlite3 *db = databaseConnection->db;
+
+		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
+		if (status != SQLITE_OK)
+		{
+			YDBLogError(@"Error creating '%@': %d %s", THIS_METHOD, status, sqlite3_errmsg(db));
+		}
+	}
+
+	return *statement;
+}
 
 - (sqlite3_stmt *)insertStatement
 {

@@ -32,13 +32,13 @@ typedef NS_ENUM(NSInteger, YapDatabaseViewModelBlockType) {
 typedef id YapDatabaseViewModelBlock; // One of the YapDatabaseViewModelWith_X_Block types below.
 
 typedef void (^YapDatabaseViewModelWithKeyBlock)      \
-(id viewModelObject, NSString *collection, NSString *key, YapDatabaseViewModelTransaction *transaction);
+(id *viewModelObject, NSString *collection, NSString *key, YapDatabaseViewModelTransaction *transaction);
 typedef void (^YapDatabaseViewModelWithObjectBlock)   \
-(id viewModelObject, NSString *collection, NSString *key, id object, YapDatabaseViewModelTransaction *transaction);
+(id *viewModelObject, NSString *collection, NSString *key, id object, YapDatabaseViewModelTransaction *transaction);
 typedef void (^YapDatabaseViewModelWithMetadataBlock) \
-(id viewModelObject, NSString *collection, NSString *key, id metadata, YapDatabaseViewModelTransaction *transaction);
+(id *viewModelObject, NSString *collection, NSString *key, id metadata, YapDatabaseViewModelTransaction *transaction);
 typedef void (^YapDatabaseViewModelWithRowBlock)      \
-(id viewModelObject, NSString *collection, NSString *key, id object, id metadata, YapDatabaseViewModelTransaction *transaction);
+(id *viewModelObject, NSString *collection, NSString *key, id object, id metadata, YapDatabaseViewModelTransaction *transaction);
 
 + (instancetype)withKeyBlock:(YapDatabaseViewModelWithKeyBlock)block;
 + (instancetype)withObjectBlock:(YapDatabaseViewModelWithObjectBlock)block;

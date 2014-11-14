@@ -48,6 +48,7 @@
 - (instancetype)initWithViewModel:(YapDatabaseViewModel *)viewModel
                databaseConnection:(YapDatabaseConnection *)databaseConnection;
 
+- (sqlite3_stmt *)getDataForRowidStatement;
 - (sqlite3_stmt *)insertStatement;
 - (sqlite3_stmt *)removeStatement;
 - (sqlite3_stmt *)removeAllStatement;

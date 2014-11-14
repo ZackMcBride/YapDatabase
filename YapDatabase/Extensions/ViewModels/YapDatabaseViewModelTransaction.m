@@ -456,24 +456,24 @@ static NSString *const ExtKey_version_deprecated = @"version";
         if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey) {
             __unsafe_unretained YapDatabaseViewModelWithKeyBlock block =(YapDatabaseViewModelWithKeyBlock)viewModel->block;
 
-            block(currentViewModelObject, collection, key, self);
+            block(&currentViewModelObject, collection, key, self);
         } else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject) {
             __unsafe_unretained YapDatabaseViewModelWithObjectBlock block =
             (YapDatabaseViewModelWithObjectBlock)viewModel->block;
 
-            block(currentViewModelObject, collection, key, object, self);
+            block(&currentViewModelObject, collection, key, object, self);
         }
         else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata) {
             __unsafe_unretained YapDatabaseViewModelWithMetadataBlock block =
             (YapDatabaseViewModelWithMetadataBlock)viewModel->block;
 
-            block(currentViewModelObject, collection, key, metadata, self);
+            block(&currentViewModelObject, collection, key, metadata, self);
         }
         else {
             __unsafe_unretained YapDatabaseViewModelWithRowBlock block =
             (YapDatabaseViewModelWithRowBlock)viewModel->block;
 
-            block(currentViewModelObject, collection, key, object, metadata, self);
+            block(&currentViewModelObject, collection, key, object, metadata, self);
         }
 
         if (currentViewModelObject) {
@@ -484,8 +484,6 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
             [self addViewModelObject:currentViewModelObject withPrimaryKey:viewModelPrimaryKey rowId:rowid];
         }
-
-        NSLog(@".");
     }
 }
 
@@ -668,6 +666,27 @@ static NSString *const ExtKey_version_deprecated = @"version";
     __block id object;
     [self _enumerateRowidsMatchingQuery:query usingBlock:^(int64_t rowid, BOOL *stop) {
 		object = [databaseTransaction objectForKey:primaryKey inCollection:nil withRowid:rowid];
+
+        sqlite3_stmt *statement = [viewModelConnection getDataForRowidStatement];
+        if (statement != NULL)
+        {
+            sqlite3_bind_int64(statement, 1, rowid);
+
+            int status = sqlite3_step(statement);
+            if (status == SQLITE_ROW)
+            {
+//                if (connection->needsMarkSqlLevelSharedReadLock)
+//                    [connection markSqlLevelSharedReadLockAcquired];
+
+                const void *blob = sqlite3_column_blob(statement, 0);
+                int blobSize = sqlite3_column_bytes(statement, 0);
+                
+                // Performance tuning:
+                // Use dataWithBytesNoCopy to avoid an extra allocation and memcpy.
+                NSData *data = [NSData dataWithBytesNoCopy:(void *)blob length:blobSize freeWhenDone:NO];
+                object = viewModelConnection->databaseConnection->database->objectDeserializer(nil, primaryKey, data);
+            }
+        }
         *stop = YES;
     }];
     return object;
