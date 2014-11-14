@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+@class YapDatabaseViewModelTransaction;
+
 /**
  * Specifies the kind of block being used.
  **/
@@ -30,13 +32,13 @@ typedef NS_ENUM(NSInteger, YapDatabaseViewModelBlockType) {
 typedef id YapDatabaseViewModelBlock; // One of the YapDatabaseViewModelWith_X_Block types below.
 
 typedef void (^YapDatabaseViewModelWithKeyBlock)      \
-(NSMutableDictionary *dict, NSString *collection, NSString *key, NSArray **mappedPrimaryKeyTuple);
+(id viewModelObject, NSString *collection, NSString *key, YapDatabaseViewModelTransaction *transaction);
 typedef void (^YapDatabaseViewModelWithObjectBlock)   \
-(NSMutableDictionary *dict, NSString *collection, NSString *key, id object, NSArray **mappedPrimaryKeyTuple);
+(id viewModelObject, NSString *collection, NSString *key, id object, YapDatabaseViewModelTransaction *transaction);
 typedef void (^YapDatabaseViewModelWithMetadataBlock) \
-(NSMutableDictionary *dict, NSString *collection, NSString *key, id metadata, NSArray **mappedPrimaryKeyTuple);
+(id viewModelObject, NSString *collection, NSString *key, id metadata, YapDatabaseViewModelTransaction *transaction);
 typedef void (^YapDatabaseViewModelWithRowBlock)      \
-(NSMutableDictionary *dict, NSString *collection, NSString *key, id object, id metadata, NSArray **mappedPrimaryKeyTuple);
+(id viewModelObject, NSString *collection, NSString *key, id object, id metadata, YapDatabaseViewModelTransaction *transaction);
 
 + (instancetype)withKeyBlock:(YapDatabaseViewModelWithKeyBlock)block;
 + (instancetype)withObjectBlock:(YapDatabaseViewModelWithObjectBlock)block;

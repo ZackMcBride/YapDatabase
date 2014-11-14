@@ -8,19 +8,13 @@ typedef NS_ENUM(NSInteger, YapDatabaseViewModelType) {
 	YapDatabaseViewModelTypeText
 };
 
-@interface YapDatabaseViewModelSetup : NSObject <NSCopying, NSFastEnumeration>
+@interface YapDatabaseViewModelSetup : NSObject <NSCopying>
 
-- (id)init;
-- (id)initWithCapacity:(NSUInteger)capacity;
+- (instancetype)initWithRelatedCollections:(NSSet *)relatedCollections
+      primaryKeyForObjectInCollectionBlock:(NSString * (^)(id object, NSString *collection))primaryKeyForObjectInCollectionBlock;
 
-- (void)addColumn:(NSString *)name withType:(YapDatabaseViewModelType)type;
-
-- (NSUInteger)count;
-- (YapDatabaseViewModelColumn *)columnAtIndex:(NSUInteger)index;
-- (YapDatabaseViewModelColumn *)columnWithName:(NSString *)name;
-
-
-- (NSArray *)columnNames;
+@property (nonatomic, copy, readonly) NSString *(^primaryKeyForObjectInCollection)(id object, NSString *collection);
+@property (nonatomic, strong, readonly) NSSet *relatedCollections;
 
 @end
 

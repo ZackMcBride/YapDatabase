@@ -91,14 +91,6 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		return nil;
 	}
 
-	if ([inSetup count] == 0)
-	{
-		NSAssert(NO, @"Invalid setup: empty");
-
-		YDBLogError(@"%@: Invalid setup: empty", THIS_METHOD);
-		return nil;
-	}
-
 	if (inHandler == NULL)
 	{
 		NSAssert(NO, @"Invalid handler: NULL");
@@ -115,9 +107,6 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 
 		block = inHandler.block;
 		blockType = inHandler.blockType;
-
-		columnNamesSharedKeySet = [NSDictionary sharedKeySetForKeys:[setup columnNames]];
-
 		versionTag = inVersionTag ? [inVersionTag copy] : @"";
 
 		options = inOptions ? [inOptions copy] : [YapDatabaseViewModelOptions new];

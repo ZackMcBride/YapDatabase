@@ -41,8 +41,6 @@
     __strong YapDatabaseViewModel *viewModel;
     __unsafe_unretained YapDatabaseConnection *databaseConnection;
 
-    NSMutableDictionary *blockDict;
-
     YapCache *queryCache;
     NSUInteger queryCacheLimit;
 }
@@ -51,7 +49,6 @@
                databaseConnection:(YapDatabaseConnection *)databaseConnection;
 
 - (sqlite3_stmt *)insertStatement;
-- (sqlite3_stmt *)updateStatementWithColumns:(NSArray *)columns;
 - (sqlite3_stmt *)removeStatement;
 - (sqlite3_stmt *)removeAllStatement;
 

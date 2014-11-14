@@ -157,9 +157,6 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	YapDatabaseViewModelTransaction *transaction = [[YapDatabaseViewModelTransaction alloc] initWithViewModelConnection:self
                                                                                                     databaseTransaction:databaseTransaction];
 
-	if (blockDict == nil)
-		blockDict = [NSMutableDictionary dictionaryWithSharedKeySet:viewModel->columnNamesSharedKeySet];
-
 	return transaction;
 }
 
@@ -178,24 +175,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	sqlite3_stmt **statement = &insertStatement;
 	if (*statement == NULL)
 	{
-		NSMutableString *string = [NSMutableString stringWithCapacity:100];
-		[string appendFormat:@"INSERT INTO \"%@\" (\"rowid\"", [viewModel tableName]];
-
-		for (YapDatabaseViewModelColumn *column in viewModel->setup)
-		{
-			[string appendFormat:@", \"%@\"", column.name];
-		}
-
-		[string appendString:@") VALUES (?"];
-
-		NSUInteger count = [viewModel->setup count];
-		NSUInteger i;
-		for (i = 0; i < count; i++)
-		{
-			[string appendString:@", ?"];
-		}
-
-		[string appendString:@");"];
+		NSString *string = [NSString stringWithFormat:@"INSERT INTO \"%@\" (\"rowid\", \"key\", \"data\") VALUES (?,?,?);", [viewModel tableName]];
 
 		sqlite3 *db = databaseConnection->db;
 
@@ -207,31 +187,6 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	}
 
 	return *statement;
-}
-
-- (sqlite3_stmt *)updateStatementWithColumns:(NSArray *)columns {
-    sqlite3_stmt *statement;
-    NSMutableString *string = [NSMutableString stringWithCapacity:100];
-    [string appendFormat:@"UPDATE \"%@\" SET ", [viewModel tableName]];
-
-    for (int i = 0; i < columns.count; i++) {
-        YapDatabaseViewModelColumn *column = columns[i];
-        [string appendFormat:@"\"%@\" = ?", column.name];
-        if (i != columns.count - 1) {
-            [string appendString:@", "];
-        }
-    }
-
-    [string appendFormat:@" WHERE \"rowid\" = ?;"];
-
-    sqlite3 *db = databaseConnection->db;
-
-    int status = sqlite3_prepare_v2(db, [string UTF8String], -1, &statement, NULL);
-    if (status != SQLITE_OK)
-    {
-        YDBLogError(@"%@: Error creating prepared statement: %d %s", THIS_METHOD, status, sqlite3_errmsg(db));
-    }
-	return statement;
 }
 
 - (sqlite3_stmt *)removeStatement
