@@ -197,144 +197,42 @@ static NSString *const ExtKey_version_deprecated = @"version";
 {
 	// Remove everything from the database
 
-//	[self removeAllRowids];
-//
-//	// Enumerate the existing rows in the database and populate the indexes
-//
-//	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
-//
-//	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
-//
-//	if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey)
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithKeyBlock viewModelBlock =
-//        (YapDatabaseViewModelWithKeyBlock)viewModel->block;
-//
-//		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, BOOL *stop);
-//		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, BOOL *stop) {
-//
-//			viewModelBlock(viewModelConnection->blockDict, collection, key, self);
-//
-//			if ([viewModelConnection->blockDict count] > 0)
-//			{
-////				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
-//				[viewModelConnection->blockDict removeAllObjects];
-//			}
-//		};
-//
-//		if (allowedCollections)
-//		{
-//			[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
-//
-//				if ([allowedCollections isAllowed:collection])
-//				{
-//					[databaseTransaction _enumerateKeysInCollections:@[ collection ] usingBlock:enumBlock];
-//				}
-//			}];
-//		}
-//		else // if (!allowedCollections)
-//		{
-//			[databaseTransaction _enumerateKeysInAllCollectionsUsingBlock:enumBlock];
-//		}
-//	}
-//	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithObjectBlock viewModelBlock =
-//        (YapDatabaseViewModelWithObjectBlock)viewModel->block;
-//
-//		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop);
-//		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop) {
-//
-//			viewModelBlock(viewModelConnection->blockDict, collection, key, object, self);
-//
-//			if ([viewModelConnection->blockDict count] > 0)
-//			{
-////				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
-//				[viewModelConnection->blockDict removeAllObjects];
-//			}
-//		};
-//
-//		if (allowedCollections)
-//		{
-//			[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
-//
-//				if ([allowedCollections isAllowed:collection])
-//				{
-//					[databaseTransaction _enumerateKeysAndObjectsInCollections:@[ collection ]
-//					                                                usingBlock:enumBlock];
-//				}
-//			}];
-//		}
-//		else // if (!allowedCollections)
-//		{
-//			[databaseTransaction _enumerateKeysAndObjectsInAllCollectionsUsingBlock:enumBlock];
-//		}
-//	}
-//	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithMetadataBlock viewModelBlock =
-//        (YapDatabaseViewModelWithMetadataBlock)viewModel->block;
-//
-//		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop);
-//		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop) {
-//
-//			viewModelBlock(viewModelConnection->blockDict, collection, key, metadata, self);
-//
-//			if ([viewModelConnection->blockDict count] > 0)
-//			{
-////				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
-//				[viewModelConnection->blockDict removeAllObjects];
-//			}
-//		};
-//
-//		if (allowedCollections)
-//		{
-//			[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
-//
-//				if ([allowedCollections isAllowed:collection])
-//				{
-//					[databaseTransaction _enumerateKeysAndMetadataInCollections:@[ collection ]
-//					                                                 usingBlock:enumBlock];
-//				}
-//			}];
-//		}
-//		else // if (!allowedCollections)
-//		{
-//			[databaseTransaction _enumerateKeysAndMetadataInAllCollectionsUsingBlock:enumBlock];
-//		}
-//	}
-//	else // if (ViewModel->blockType == YapDatabaseViewModelBlockTypeWithRow)
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithRowBlock viewModelBlock =
-//        (YapDatabaseViewModelWithRowBlock)viewModel->block;
-//
-//		void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop);
-//		enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop) {
-//
-//			viewModelBlock(viewModelConnection->blockDict, collection, key, object, metadata, self);
-//
-//			if ([viewModelConnection->blockDict count] > 0)
-//			{
-////				[self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
-//				[viewModelConnection->blockDict removeAllObjects];
-//			}
-//		};
-//
-//		if (allowedCollections)
-//		{
-//			[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
-//
-//				if ([allowedCollections isAllowed:collection])
-//				{
-//					[databaseTransaction _enumerateRowsInCollections:@[ collection ] usingBlock:enumBlock];
-//				}
-//			}];
-//		}
-//		else // if (!allowedCollections)
-//		{
-//			[databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:enumBlock];
-//		}
-//	}
+	[self removeAllRowids];
+
+	// Enumerate the existing rows in the database and populate the indexes
+
+	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
+
+	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+
+    __unsafe_unretained YapDatabaseViewModelWithObjectBlock viewModelBlock =
+    (YapDatabaseViewModelWithObjectBlock)viewModel->block;
+
+
+    void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop);
+    enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop) {
+        [self insertOrUpdateViewModelOnObjectChange:object forCollectionKey:collection withMetadata:metadata rowid:rowid];
+    };
+
+    if (allowedCollections)
+    {
+        [databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+
+            if ([allowedCollections isAllowed:collection])
+            {
+                [databaseTransaction _enumerateRowsInCollection:@[ collection ]
+                                                     usingBlock:
+                 ^(int64_t rowid, NSString *key, id object, id metadata, BOOL *stop) {
+                     enumBlock(rowid, collection, key, object, metadata, stop);
+                }];
+            }
+        }];
+    }
+    else
+    {
+        [databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:enumBlock];
+    }
+
 	return YES;
 }
 
@@ -534,18 +432,21 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	databaseTransaction = nil;
 }
 
-- (void)handleInsertObject:(id)object
-          forCollectionKey:(YapCollectionKey *)collectionKey
-              withMetadata:(id)metadata
-                     rowid:(int64_t)rowid
+- (void)insertOrUpdateViewModelOnObjectChange:(id)object
+                             forCollectionKey:(YapCollectionKey *)collectionKey
+                                 withMetadata:(id)metadata
+                                        rowid:(int64_t)rowid
 {
-	YDBLogAutoTrace();
-
 	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
 
 	__unsafe_unretained NSString *collection = collectionKey.collection;
 	__unsafe_unretained NSString *key = collectionKey.key;
 
+    __unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+	if (allowedCollections && ![allowedCollections isAllowed:collection])
+	{
+		return;
+	}
 
     BOOL shouldProcessInsert = [viewModel->setup.relatedCollections containsObject:collection];
 
@@ -579,7 +480,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
         {
             __unsafe_unretained YapDatabaseViewModelWithRowBlock block =
             (YapDatabaseViewModelWithRowBlock)viewModel->block;
-            
+
             block(currentViewModelObject, collection, key, object, metadata, self);
         }
 
@@ -592,6 +493,15 @@ static NSString *const ExtKey_version_deprecated = @"version";
     }
 }
 
+- (void)handleInsertObject:(id)object
+          forCollectionKey:(YapCollectionKey *)collectionKey
+              withMetadata:(id)metadata
+                     rowid:(int64_t)rowid
+{
+    YDBLogAutoTrace();
+    [self insertOrUpdateViewModelOnObjectChange:object forCollectionKey:collectionKey withMetadata:metadata rowid:rowid];
+}
+
 /**
  * YapDatabase extension hook.
  * This method is invoked by a YapDatabaseReadWriteTransaction as a post-operation-hook.
@@ -601,68 +511,8 @@ static NSString *const ExtKey_version_deprecated = @"version";
               withMetadata:(id)metadata
                      rowid:(int64_t)rowid
 {
-//	YDBLogAutoTrace();
-//
-//	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
-//
-//	__unsafe_unretained NSString *collection = collectionKey.collection;
-//	__unsafe_unretained NSString *key = collectionKey.key;
-//
-//	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
-//
-//    NSArray *mappedPrimaryKeyTuple;
-//
-//	if (allowedCollections && ![allowedCollections isAllowed:collection])
-//	{
-//		return;
-//	}
-//
-//	// Invoke the block to find out if the object should be included in the index.
-//
-//	if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey)
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithKeyBlock block =
-//        (YapDatabaseViewModelWithKeyBlock)viewModel->block;
-//
-//		block(viewModelConnection->blockDict, collection, key, self);
-//	}
-//	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithObjectBlock block =
-//        (YapDatabaseViewModelWithObjectBlock)viewModel->block;
-//
-//		block(viewModelConnection->blockDict, collection, key, object, self);
-//	}
-//	else if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithMetadataBlock block =
-//        (YapDatabaseViewModelWithMetadataBlock)viewModel->block;
-//
-//		block(viewModelConnection->blockDict, collection, key, metadata, self);
-//	}
-//	else
-//	{
-//		__unsafe_unretained YapDatabaseViewModelWithRowBlock block =
-//        (YapDatabaseViewModelWithRowBlock)viewModel->block;
-//
-//		block(viewModelConnection->blockDict, collection, key, object, metadata, self);
-//	}
-//
-//	if ([viewModelConnection->blockDict count] == 0)
-//	{
-//		// Remove associated values from index (if needed).
-//		// This was an update operation, so the rowid may have previously had values in the index.
-//
-//		[self removeRowid:rowid];
-//	}
-//	else
-//	{
-//		// Add values to index (or update them).
-//		// This was an update operation, so we need to insert or update.
-//
-////        [self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
-//		[viewModelConnection->blockDict removeAllObjects];
-//	}
+	YDBLogAutoTrace();
+    [self insertOrUpdateViewModelOnObjectChange:object forCollectionKey:collectionKey withMetadata:metadata rowid:rowid];
 }
 
 /**
@@ -671,71 +521,41 @@ static NSString *const ExtKey_version_deprecated = @"version";
  **/
 - (void)handleReplaceObject:(id)object forCollectionKey:(YapCollectionKey *)collectionKey withRowid:(int64_t)rowid
 {
-//	YDBLogAutoTrace();
-//
-//	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
-//
-//	__unsafe_unretained NSString *collection = collectionKey.collection;
-//	__unsafe_unretained NSString *key = collectionKey.key;
-//
-//	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
-//
-//    NSArray *mappedPrimaryKeyTuple;
-//
-//	if (allowedCollections && ![allowedCollections isAllowed:collection])
-//	{
-//		return;
-//	}
-//
-//	// Invoke the block to find out if the object should be included in the index.
-//
-//	id metadata = nil;
-//
-//	if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey ||
-//	    viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
-//	{
-//		// Index values are based on the key or object.
-//		// Neither have changed, and thus the values haven't changed.
-//
-//		return;
-//	}
-//	else
-//	{
-//		// Index values are based on object or row (object+metadata).
-//		// Invoke block to see what the new values are.
-//
-//		if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
-//		{
-//			__unsafe_unretained YapDatabaseViewModelWithObjectBlock block =
-//            (YapDatabaseViewModelWithObjectBlock)viewModel->block;
-//
-//			block(viewModelConnection->blockDict, collection, key, object, self);
-//		}
-//		else
-//		{
-//			__unsafe_unretained YapDatabaseViewModelWithRowBlock block =
-//            (YapDatabaseViewModelWithRowBlock)viewModel->block;
-//
-//			metadata = [databaseTransaction objectForCollectionKey:collectionKey withRowid:rowid];
-//			block(viewModelConnection->blockDict, collection, key, object, metadata, self);
-//		}
-//
-//		if ([viewModelConnection->blockDict count] == 0)
-//		{
-//			// Remove associated values from index (if needed).
-//			// This was an update operation, so the rowid may have previously had values in the index.
-//
-//			[self removeRowid:rowid];
-//		}
-//		else
-//		{
-//			// Add values to index (or update them).
-//			// This was an update operation, so we need to insert or update.
-//
-////            [self addRowId:rowid forMappedPrimaryKeyTuple:mappedPrimaryKeyTuple];
-//			[viewModelConnection->blockDict removeAllObjects];
-//		}
-//	}
+	YDBLogAutoTrace();
+
+	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
+
+	__unsafe_unretained NSString *collection = collectionKey.collection;
+	__unsafe_unretained NSString *key = collectionKey.key;
+
+	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+
+    NSArray *mappedPrimaryKeyTuple;
+
+	if (allowedCollections && ![allowedCollections isAllowed:collection])
+	{
+		return;
+	}
+
+	// Invoke the block to find out if the object should be included in the index.
+
+	id metadata = nil;
+
+	if (viewModel->blockType == YapDatabaseViewModelBlockTypeWithKey ||
+	    viewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
+	{
+		// Index values are based on the key or object.
+		// Neither have changed, and thus the values haven't changed.
+
+		return;
+	}
+	else
+	{
+		// Index values are based on object or row (object+metadata).
+		// Invoke block to see what the new values are.
+
+        [self insertOrUpdateViewModelOnObjectChange:object forCollectionKey:collectionKey withMetadata:metadata rowid:rowid];
+	}
 }
 
 /**
@@ -744,71 +564,27 @@ static NSString *const ExtKey_version_deprecated = @"version";
  **/
 - (void)handleReplaceMetadata:(id)metadata forCollectionKey:(YapCollectionKey *)collectionKey withRowid:(int64_t)rowid
 {
-//	YDBLogAutoTrace();
-//
-//	__unsafe_unretained YapDatabaseViewModel *ViewModel = viewModelConnection->viewModel;
-//
-//	__unsafe_unretained NSString *collection = collectionKey.collection;
-//	__unsafe_unretained NSString *key = collectionKey.key;
-//
-//	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = ViewModel->options.allowedCollections;
-//
-//    NSArray *mappedPrimaryKeyTuple;
-//
-//	if (allowedCollections && ![allowedCollections isAllowed:collection])
-//	{
-//		return;
-//	}
-//
-//	// Invoke the block to find out if the object should be included in the index.
-//
-//	id object = nil;
-//
-//	if (ViewModel->blockType == YapDatabaseViewModelBlockTypeWithKey ||
-//	    ViewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
-//	{
-//		// Index values are based on the key or object.
-//		// Neither have changed, and thus the values haven't changed.
-//
-//		return;
-//	}
-//	else
-//	{
-//		// Index values are based on metadata or objectAndMetadata.
-//		// Invoke block to see what the new values are.
-//
-//		if (ViewModel->blockType == YapDatabaseViewModelBlockTypeWithMetadata)
-//		{
-//			__unsafe_unretained YapDatabaseViewModelWithMetadataBlock block =
-//            (YapDatabaseViewModelWithMetadataBlock)ViewModel->block;
-//
-//			block(viewModelConnection->blockDict, collection, key, metadata, self);
-//		}
-//		else
-//		{
-//			__unsafe_unretained YapDatabaseViewModelWithRowBlock block =
-//            (YapDatabaseViewModelWithRowBlock)ViewModel->block;
-//
-//			object = [databaseTransaction objectForCollectionKey:collectionKey withRowid:rowid];
-//			block(viewModelConnection->blockDict, collection, key, object, metadata, self);
-//		}
-//
-//		if ([viewModelConnection->blockDict count] == 0)
-//		{
-//			// Remove associated values from index (if needed).
-//			// This was an update operation, so the rowid may have previously had values in the index.
-//
-//			[self removeRowid:rowid];
-//		}
-//		else
-//		{
-//			// Add values to index (or update them).
-//			// This was an update operation, so we need to insert or update.
-//
-////            [self addRowId:rowid forPrimaryKey:]viewModelConnection->blockDict[@"key"];
-//			[viewModelConnection->blockDict removeAllObjects];
-//		}
-//	}
+	YDBLogAutoTrace();
+
+	__unsafe_unretained YapDatabaseViewModel *ViewModel = viewModelConnection->viewModel;
+
+	id object = nil;
+
+	if (ViewModel->blockType == YapDatabaseViewModelBlockTypeWithKey ||
+	    ViewModel->blockType == YapDatabaseViewModelBlockTypeWithObject)
+	{
+		// Index values are based on the key or object.
+		// Neither have changed, and thus the values haven't changed.
+
+		return;
+	}
+	else
+	{
+		// Index values are based on metadata or objectAndMetadata.
+		// Invoke block to see what the new values are.
+
+        [self insertOrUpdateViewModelOnObjectChange:object forCollectionKey:collectionKey withMetadata:metadata rowid:rowid];
+	}
 }
 
 /**
