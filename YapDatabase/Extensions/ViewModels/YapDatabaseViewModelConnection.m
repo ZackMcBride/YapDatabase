@@ -175,8 +175,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 - (sqlite3_stmt *)getDataForRowidStatement
 {
 	sqlite3_stmt **statement = &getDataForRowidStatement;
-	if (*statement == NULL)
-	{
+
         NSString *string = [NSString stringWithFormat:@"SELECT \"data\" FROM \"%@\" WHERE \"rowid\" = ?;", [viewModel tableName]];
 		char *stmt = string.UTF8String;
 		int stmtLen = (int)strlen(stmt);
@@ -188,7 +187,6 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		{
 			YDBLogError(@"Error creating '%@': %d %s", THIS_METHOD, status, sqlite3_errmsg(db));
 		}
-	}
 
 	return *statement;
 }

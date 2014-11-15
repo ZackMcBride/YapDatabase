@@ -211,7 +211,8 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
     void (^enumBlock)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop);
     enumBlock = ^(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop) {
-        [self insertOrUpdateViewModelOnObjectChange:object forCollectionKey:collection withMetadata:metadata rowid:rowid];
+        YapCollectionKey *collectionKey = [[YapCollectionKey alloc] initWithCollection:collection key:key];
+        [self insertOrUpdateViewModelOnObjectChange:object forCollectionKey:collectionKey withMetadata:metadata rowid:rowid];
     };
 
     if (allowedCollections)
