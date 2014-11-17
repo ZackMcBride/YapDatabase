@@ -196,7 +196,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	sqlite3_stmt **statement = &insertStatement;
 	if (*statement == NULL)
 	{
-		NSString *string = [NSString stringWithFormat:@"INSERT INTO \"%@\" (\"rowid\", \"key\", \"data\") VALUES (?,?,?);", [viewModel tableName]];
+		NSString *string = [NSString stringWithFormat:@"INSERT OR REPLACE INTO \"%@\" (\"rowid\", \"key\", \"data\") VALUES (?,?,?);", [viewModel tableName]];
 
 		sqlite3 *db = databaseConnection->db;
 
