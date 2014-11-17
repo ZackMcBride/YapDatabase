@@ -120,11 +120,12 @@ NS_INLINE BOOL YDBIsMainThread()
 	}
 }
 
-- (id)initWithDatabase:(YapDatabase *)inDatabase
+- (id)initWithDatabase:(YapDatabase *)inDatabase tableName:(NSString *)aTableName
 {
 	if ((self = [super init]))
 	{
 		database = inDatabase;
+        tableName = aTableName;
 		connectionQueue = dispatch_queue_create("YapDatabaseConnection", NULL);
 		
 		IsOnConnectionQueueKey = &IsOnConnectionQueueKey;
@@ -889,7 +890,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getCollectionCountStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT COUNT(DISTINCT collection) AS NumberOfRows FROM \"database2\";";
+        NSString *q = [NSString stringWithFormat:@"SELECT COUNT(DISTINCT collection) AS NumberOfRows FROM \"%@\";", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -907,7 +909,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getKeyCountForCollectionStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT COUNT(*) AS NumberOfRows FROM \"database2\" WHERE \"collection\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT COUNT(*) AS NumberOfRows FROM \"%@\" WHERE \"collection\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -925,7 +928,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getKeyCountForAllStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT COUNT(*) AS NumberOfRows FROM \"database2\";";
+        NSString *q = [NSString stringWithFormat:@"SELECT COUNT(*) AS NumberOfRows FROM \"%@\";", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -943,7 +947,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getCountForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT COUNT(*) AS NumberOfRows FROM \"database2\" WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT COUNT(*) AS NumberOfRows FROM \"%@\" WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -961,7 +966,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getRowidForKeyStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\" FROM \"database2\" WHERE \"collection\" = ? AND \"key\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\" FROM \"%@\" WHERE \"collection\" = ? AND \"key\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -979,7 +985,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getKeyForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"collection\", \"key\" FROM \"database2\" WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"collection\", \"key\" FROM \"%@\" WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -997,7 +1004,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getDataForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"data\" FROM \"database2\" WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"data\" FROM \"%@\" WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1015,7 +1023,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getMetadataForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"metadata\" FROM \"database2\" WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"metadata\" FROM \"%@\" WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1033,7 +1042,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getAllForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"data\", \"metadata\" FROM \"database2\" WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"data\", \"metadata\" FROM \"%@\" WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1051,7 +1061,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getDataForKeyStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"data\" FROM \"database2\" WHERE \"collection\" = ? AND \"key\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"data\" FROM \"%@\" WHERE \"collection\" = ? AND \"key\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1069,7 +1080,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getMetadataForKeyStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"metadata\" FROM \"database2\" WHERE \"collection\" = ? AND \"key\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"metadata\" FROM \"%@\" WHERE \"collection\" = ? AND \"key\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1087,7 +1099,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &getAllForKeyStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"data\", \"metadata\" FROM \"database2\" WHERE \"collection\" = ? AND \"key\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"data\", \"metadata\" FROM \"%@\" WHERE \"collection\" = ? AND \"key\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1105,8 +1118,9 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &insertForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "INSERT INTO \"database2\""
-		             " (\"collection\", \"key\", \"data\", \"metadata\") VALUES (?, ?, ?, ?);";
+        NSString *q = [NSString stringWithFormat:@"INSERT INTO \"%@\""
+                                                  " (\"collection\", \"key\", \"data\", \"metadata\") VALUES (?, ?, ?, ?);", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1124,7 +1138,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &updateAllForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "UPDATE \"database2\" SET \"data\" = ?, \"metadata\" = ? WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"UPDATE \"%@\" SET \"data\" = ?, \"metadata\" = ? WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1142,7 +1157,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &updateObjectForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "UPDATE \"database2\" SET \"data\" = ? WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"UPDATE \"%@\" SET \"data\" = ? WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1160,7 +1176,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &updateMetadataForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "UPDATE \"database2\" SET \"metadata\" = ? WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"UPDATE \"%@\" SET \"metadata\" = ? WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1178,7 +1195,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &removeForRowidStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "DELETE FROM \"database2\" WHERE \"rowid\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"DELETE FROM \"%@\" WHERE \"rowid\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1196,7 +1214,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &removeCollectionStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "DELETE FROM \"database2\" WHERE \"collection\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"DELETE FROM \"%@\" WHERE \"collection\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1214,7 +1233,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &removeAllStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "DELETE FROM \"database2\";";
+        NSString *q = [NSString stringWithFormat:@"DELETE FROM \"%@\";", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1232,7 +1252,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateCollectionsStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT DISTINCT \"collection\" FROM \"database2\";";
+        NSString *q = [NSString stringWithFormat:@"SELECT DISTINCT \"collection\" FROM \"%@\";", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1250,7 +1271,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateCollectionsForKeyStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"collection\" FROM \"database2\" WHERE \"key\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"collection\" FROM \"%@\" WHERE \"key\" = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1268,7 +1290,8 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateKeysInCollectionStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\", \"key\" FROM \"database2\" WHERE collection = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"key\" FROM \"%@\" WHERE collection = ?;", tableName];
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1286,7 +1309,9 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateKeysInAllCollectionsStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\", \"collection\", \"key\" FROM \"database2\";";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"collection\", \"key\" FROM \"%@\";", tableName];
+
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1304,7 +1329,9 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateKeysAndMetadataInCollectionStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\", \"key\", \"metadata\" FROM \"database2\" WHERE collection = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"key\", \"metadata\" FROM \"%@\" WHERE collection = ?;", tableName];
+
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1322,8 +1349,10 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateKeysAndMetadataInAllCollectionsStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\", \"collection\", \"key\", \"metadata\""
-		             " FROM \"database2\" ORDER BY \"collection\" ASC;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"collection\", \"key\", \"metadata\""
+                                                " FROM \"%@\" ORDER BY \"collection\" ASC;", tableName];
+
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1341,7 +1370,9 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateKeysAndObjectsInCollectionStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\", \"key\", \"data\" FROM \"database2\" WHERE \"collection\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"key\", \"data\" FROM \"%@\" WHERE \"collection\" = ?;", tableName];
+
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1359,8 +1390,10 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateKeysAndObjectsInAllCollectionsStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\", \"collection\", \"key\", \"data\""
-		             " FROM \"database2\" ORDER BY \"collection\" ASC;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"collection\", \"key\", \"data\""
+                                                " FROM \"%@\" ORDER BY \"collection\" ASC;", tableName];
+
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1378,7 +1411,9 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateRowsInCollectionStatement;
 	if (*statement == NULL)
 	{
-		char *stmt = "SELECT \"rowid\", \"key\", \"data\", \"metadata\" FROM \"database2\" WHERE \"collection\" = ?;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"key\", \"data\", \"metadata\" FROM \"%@\" WHERE \"collection\" = ?;", tableName];
+
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);
@@ -1396,9 +1431,10 @@ NS_INLINE BOOL YDBIsMainThread()
 	sqlite3_stmt **statement = &enumerateRowsInAllCollectionsStatement;
 	if (*statement == NULL)
 	{
-		char *stmt =
-		    "SELECT \"rowid\", \"collection\", \"key\", \"data\", \"metadata\""
-		    " FROM \"database2\" ORDER BY \"collection\" ASC;";
+        NSString *q = [NSString stringWithFormat:@"SELECT \"rowid\", \"collection\", \"key\", \"data\", \"metadata\""
+                                                " FROM \"%@\" ORDER BY \"collection\" ASC;", tableName];
+
+		char *stmt = q.UTF8String;
 		int stmtLen = (int)strlen(stmt);
 		
 		int status = sqlite3_prepare_v2(db, stmt, stmtLen+1, statement, NULL);

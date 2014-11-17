@@ -44,6 +44,8 @@ NSString *const YapDatabaseExtensionsOrderKey        = @"extensionsOrder";
 NSString *const YapDatabaseExtensionDependenciesKey  = @"extensionDependencies";
 NSString *const YapDatabaseNotificationKey           = @"notification";
 
+NSString *const DefaultTableName = @"database2";
+
 /**
  * The database version is stored (via pragma user_version) to sqlite.
  * It is used to represent the version of the userlying architecture of YapDatabase.
@@ -649,15 +651,15 @@ NSString *const YapDatabaseNotificationKey           = @"notification";
 		YDBLogError(@"Failed creating 'yap2' table: %d %s", status, sqlite3_errmsg(db));
 		return NO;
 	}
-	
-	char *createDatabaseTableStatement =
-	    "CREATE TABLE IF NOT EXISTS \"database2\""
-	    " (\"rowid\" INTEGER PRIMARY KEY,"
-	    "  \"collection\" CHAR NOT NULL,"
-	    "  \"key\" CHAR NOT NULL,"
-	    "  \"data\" BLOB,"
-	    "  \"metadata\" BLOB"
-	    " );";
+
+    NSString *q = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS \"%@\""
+                   " (\"rowid\" INTEGER PRIMARY KEY,"
+                   "  \"collection\" CHAR NOT NULL,"
+                   "  \"key\" CHAR NOT NULL,"
+                   "  \"data\" BLOB,"
+                   "  \"metadata\" BLOB"
+                   " );",  DefaultTableName];
+	char *createDatabaseTableStatement = q.UTF8String;
 	
 	status = sqlite3_exec(db, createDatabaseTableStatement, NULL, NULL, NULL);
 	if (status != SQLITE_OK)
@@ -665,9 +667,9 @@ NSString *const YapDatabaseNotificationKey           = @"notification";
 		YDBLogError(@"Failed creating 'database2' table: %d %s", status, sqlite3_errmsg(db));
 		return NO;
 	}
-	
-	char *createIndexStatement =
-	    "CREATE UNIQUE INDEX IF NOT EXISTS \"true_primary_key\" ON \"database2\" ( \"collection\", \"key\" );";
+
+    q = [NSString stringWithFormat:@"CREATE UNIQUE INDEX IF NOT EXISTS \"true_primary_key\" ON \"%@\" ( \"collection\", \"key\" );", DefaultTableName];
+	char *createIndexStatement = q.UTF8String;
 	
 	status = sqlite3_exec(db, createIndexStatement, NULL, NULL, NULL);
 	if (status != SQLITE_OK)
@@ -995,9 +997,10 @@ NSString *const YapDatabaseNotificationKey           = @"notification";
 - (BOOL)upgradeTable_2_3
 {
 	int status;
-	
-	char *stmt = "INSERT INTO \"database2\" (\"collection\", \"key\", \"data\", \"metadata\")"
-	             " SELECT \"collection\", \"key\", \"data\", \"metadata\" FROM \"database\";";
+
+    NSString *q = [NSString stringWithFormat:@"INSERT INTO \"%@\" (\"collection\", \"key\", \"data\", \"metadata\")"
+                   " SELECT \"collection\", \"key\", \"data\", \"metadata\" FROM \"database\";", DefaultTableName];
+	char *stmt = q.UTF8String;
 	
 	status = sqlite3_exec(db, stmt, NULL, NULL, NULL);
 	if (status != SQLITE_OK)
@@ -1441,7 +1444,7 @@ NSString *const YapDatabaseNotificationKey           = @"notification";
 **/
 - (YapDatabaseConnection *)newConnection
 {
-	YapDatabaseConnection *connection = [[YapDatabaseConnection alloc] initWithDatabase:self];
+	YapDatabaseConnection *connection = [[YapDatabaseConnection alloc] initWithDatabase:self tableName:DefaultTableName];
 	
 	[self addConnection:connection];
 	return connection;

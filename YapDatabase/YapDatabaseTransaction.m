@@ -1725,7 +1725,7 @@
 		NSUInteger capacity = 80 + (numKeyParams * 3);
 		NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
 		
-		[query appendString:@"SELECT \"key\", \"metadata\" FROM \"database2\""];
+		[query appendFormat:@"SELECT \"key\", \"metadata\" FROM \"%@\"", connection->tableName];
 		[query appendString:@" WHERE \"collection\" = ? AND \"key\" IN ("];
 		
 		NSUInteger i;
@@ -1932,7 +1932,7 @@
 		NSUInteger capacity = 80 + (numKeyParams * 3);
 		NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
 		
-		[query appendString:@"SELECT \"key\", \"data\" FROM \"database2\""];
+		[query appendFormat:@"SELECT \"key\", \"data\" FROM \"%@\"", connection->tableName];
 		[query appendString:@" WHERE \"collection\" = ? AND \"key\" IN ("];
 		
 		NSUInteger i;
@@ -2148,7 +2148,7 @@
 		NSUInteger capacity = 80 + (numKeyParams * 3);
 		NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
 		
-		[query appendString:@"SELECT \"key\", \"data\", \"metadata\" FROM \"database2\""];
+		[query appendFormat:@"SELECT \"key\", \"data\", \"metadata\" FROM \"%@\"", connection->tableName];
 		[query appendString:@" WHERE \"collection\" = ? AND \"key\" IN ("];
 		
 		NSUInteger i;
@@ -4881,8 +4881,8 @@
 			NSUInteger capacity = 100 + (numKeyParams * 3);
 			NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
 			
-			[query appendString:
-			    @"SELECT \"key\", \"rowid\" FROM \"database2\" WHERE \"collection\" = ? AND \"key\" IN ("];
+			[query appendFormat:
+			    @"SELECT \"key\", \"rowid\" FROM \"%@\" WHERE \"collection\" = ? AND \"key\" IN (", connection->tableName];
 			
 			NSUInteger i;
 			for (i = 0; i < numKeyParams; i++)
@@ -4948,7 +4948,7 @@
 			NSUInteger capacity = 50 + (foundCount * 3);
 			NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
 			
-			[query appendString:@"DELETE FROM \"database2\" WHERE \"rowid\" IN ("];
+			[query appendFormat:@"DELETE FROM \"%@\" WHERE \"rowid\" IN (", connection->tableName];
 			
 			NSUInteger i;
 			for (i = 0; i < foundCount; i++)
@@ -5225,7 +5225,7 @@
 			NSUInteger capacity = 50 + (foundCount * 3);
 			NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
 			
-			[query appendString:@"DELETE FROM \"database2\" WHERE \"rowid\" IN ("];
+			[query appendFormat:@"DELETE FROM \"%@\" WHERE \"rowid\" IN (", connection->tableName];
 			
 			NSUInteger i;
 			for (i = 0; i < foundCount; i++)
