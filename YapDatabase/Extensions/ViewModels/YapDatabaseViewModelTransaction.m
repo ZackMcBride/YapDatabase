@@ -6,6 +6,7 @@
 #import "YapDatabaseStatement.h"
 #import "YapWhiteListBlacklist.h"
 #import "YapDatabaseQuery.h"
+#import "YapDatabaseViewTransaction.h"
 
 #import "YapDatabaseLogging.h"
 
@@ -484,6 +485,25 @@ static NSString *const ExtKey_version_deprecated = @"version";
             }
 
             [self addViewModelObject:currentViewModelObject withPrimaryKey:viewModelPrimaryKey rowId:rowid];
+
+            YapCollectionKey *collectionKey = [[YapCollectionKey alloc] initWithCollection:[viewModel registeredName] key:viewModelPrimaryKey];
+            for (YapDatabaseExtensionTransaction *extTransaction in [databaseTransaction orderedExtensions])
+            {
+                if ([extTransaction isKindOfClass:YapDatabaseViewTransaction.class]) {
+                    YapDatabaseViewTransaction *viewTransaction = (YapDatabaseViewTransaction *)extTransaction;
+                    if (existingRowId != -1)
+                        [extTransaction handleUpdateObject:currentViewModelObject
+                                          forCollectionKey:collectionKey
+                                              withMetadata:metadata
+                                                     rowid:rowid];
+                    else
+                        [extTransaction handleInsertObject:currentViewModelObject
+                                          forCollectionKey:collectionKey
+                                              withMetadata:metadata
+                                                     rowid:rowid];
+
+                }
+            }
         }
     }
 }

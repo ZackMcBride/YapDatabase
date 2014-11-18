@@ -138,6 +138,8 @@
 		versionTag = inVersionTag ? [inVersionTag copy] : @"";
 		
 		options = inOptions ? [inOptions copy] : [[YapDatabaseViewOptions alloc] init];
+
+        NSAssert(!options.isObservingViewModel || options.allowedCollections.whitelist.count == 1, @"Can only observe one view model.");
 	}
 	return self;
 }

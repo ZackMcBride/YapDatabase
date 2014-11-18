@@ -102,4 +102,6 @@
  **/
 @property (nonatomic, copy, readonly) NSString *versionTag;
 
++ (NSString *)tableNameForRegisteredName:(NSString *)registeredName;
+
 @end
