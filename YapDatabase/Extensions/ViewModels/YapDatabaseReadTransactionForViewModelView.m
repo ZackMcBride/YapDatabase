@@ -41,8 +41,8 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
     sqlite3_stmt *getAllForRowidStatement;
 }
 
-- (instancetype)initWithViewModelName:(NSString *)viewModelName {
-    self = [super init];
+- (instancetype)initWithViewModelName:(NSString *)viewModelName connection:(YapDatabaseConnection *)aConnection isReadWriteTransaction:(BOOL)flag {
+    self = [super initWithConnection:aConnection isReadWriteTransaction:flag];
     if (self) {
         _viewModelName = viewModelName;
         _viewModelTableName = [YapDatabaseViewModel tableNameForRegisteredName:viewModelName];

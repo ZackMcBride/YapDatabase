@@ -2,6 +2,6 @@
 
 @interface YapDatabaseReadTransactionForViewModelView : YapDatabaseReadTransaction
 
-- (instancetype)initWithViewModelName:(NSString *)viewModelName;
+- (instancetype)initWithViewModelName:(NSString *)viewModelName connection:(YapDatabaseConnection *)aConnection isReadWriteTransaction:(BOOL)flag;
 
 @end
