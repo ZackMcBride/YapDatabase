@@ -26,6 +26,8 @@ static NSString *const ExtKey_version_deprecated = @"version";
 
 @implementation YapDatabaseViewModelTransaction
 
+@synthesize databaseTransaction = databaseTransaction;
+
 - (instancetype)initWithViewModelConnection:(YapDatabaseViewModelConnection *)inViewModelConnection
                         databaseTransaction:(YapDatabaseReadTransaction *)inDatabaseTransaction
 {

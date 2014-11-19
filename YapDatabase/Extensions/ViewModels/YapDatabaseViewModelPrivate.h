@@ -58,7 +58,7 @@
 @interface YapDatabaseViewModelTransaction () {
 @private
     __unsafe_unretained YapDatabaseViewModelConnection *viewModelConnection;
-    __unsafe_unretained YapDatabaseReadTransaction *databaseTransaction;
+    __weak YapDatabaseReadTransaction *databaseTransaction;
 
     BOOL isMutated;
 }
