@@ -3617,27 +3617,40 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			group = groupingBlock(collection, key, object, metadata);
 		}
 	}
-	
-	if (group == nil)
-	{
-		// Remove key from view (if needed).
-		// This was an update operation, so the key may have previously been in the view.
-		
-		[self removeRowid:rowid collectionKey:collectionKey];
-	}
-	else
-	{
-		// Add key to view (or update position).
-		// This was an update operation, so the key may have previously been in the view.
-		
-		YapDatabaseViewChangesBitMask flags = (YapDatabaseViewChangedObject | YapDatabaseViewChangedMetadata);
-		
-		[self insertRowid:rowid
-		    collectionKey:collectionKey
-		           object:object
-		         metadata:metadata
-		          inGroup:group withChanges:flags isNew:NO];
-	}
+
+    void(^rowHandler)(void) = ^{
+        if (group == nil)
+        {
+            // Remove key from view (if needed).
+            // This was an update operation, so the key may have previously been in the view.
+
+            [self removeRowid:rowid collectionKey:collectionKey];
+        }
+        else
+        {
+            // Add key to view (or update position).
+            // This was an update operation, so the key may have previously been in the view.
+
+            YapDatabaseViewChangesBitMask flags = (YapDatabaseViewChangedObject | YapDatabaseViewChangedMetadata);
+
+            [self insertRowid:rowid
+                collectionKey:collectionKey
+                       object:object
+                     metadata:metadata
+                      inGroup:group withChanges:flags isNew:NO];
+        }
+    };
+
+    if (view->options.isObservingViewModel)
+    {
+        if ([view.options.allowedCollections isAllowed:collection]) {
+            rowHandler();
+        }
+    }
+    else
+    {
+        rowHandler();
+    }
 	
 	lastHandledGroup = group;
 }

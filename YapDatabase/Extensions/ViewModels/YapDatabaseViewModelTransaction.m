@@ -6,7 +6,7 @@
 #import "YapDatabaseStatement.h"
 #import "YapWhiteListBlacklist.h"
 #import "YapDatabaseQuery.h"
-#import "YapDatabaseViewTransaction.h"
+#import "YapDatabaseViewModelViewTransaction.h"
 
 #import "YapDatabaseLogging.h"
 
@@ -489,7 +489,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
             YapCollectionKey *collectionKey = [[YapCollectionKey alloc] initWithCollection:[viewModel registeredName] key:viewModelPrimaryKey];
             for (YapDatabaseExtensionTransaction *extTransaction in [databaseTransaction orderedExtensions])
             {
-                if ([extTransaction isKindOfClass:YapDatabaseViewTransaction.class]) {
+                if ([extTransaction isKindOfClass:YapDatabaseViewModelViewTransaction.class]) {
                     YapDatabaseViewTransaction *viewTransaction = (YapDatabaseViewTransaction *)extTransaction;
                     if (existingRowId != -1)
                         [extTransaction handleUpdateObject:currentViewModelObject
