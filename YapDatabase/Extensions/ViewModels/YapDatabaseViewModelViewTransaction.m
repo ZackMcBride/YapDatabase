@@ -30,7 +30,6 @@
     if (self) {
         viewModelTableName = [[YapDatabaseViewModel tableNameForRegisteredName:aViewModelName] copy];
         viewModelName = [aViewModelName copy];
-        NSLog(@"View model table - %@", viewModelTableName);
     }
     return self;
 }
