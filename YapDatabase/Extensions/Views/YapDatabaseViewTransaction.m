@@ -1931,8 +1931,8 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapCollectionKey *another = nil;
 			id anotherObject = nil;
 			[databaseTransaction getCollectionKey:&another
-                                object:&anotherObject
-                              forRowid:anotherRowid];
+                                           object:&anotherObject
+                                         forRowid:anotherRowid];
 
 			return sortingBlock(group, collectionKey.collection, collectionKey.key,        object,
 			                                 another.collection,       another.key, anotherObject);
@@ -1945,8 +1945,8 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapCollectionKey *another = nil;
 			id anotherMetadata = nil;
 			[databaseTransaction getCollectionKey:&another
-                              metadata:&anotherMetadata
-                              forRowid:anotherRowid];
+                                         metadata:&anotherMetadata
+                                         forRowid:anotherRowid];
 
 			return sortingBlock(group, collectionKey.collection, collectionKey.key,        metadata,
 			                                 another.collection,       another.key, anotherMetadata);
@@ -1960,9 +1960,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			id anotherObject = nil;
 			id anotherMetadata = nil;
 			[databaseTransaction getCollectionKey:&another
-                                object:&anotherObject
-                              metadata:&anotherMetadata
-                              forRowid:anotherRowid];
+                                           object:&anotherObject
+                                         metadata:&anotherMetadata
+                                         forRowid:anotherRowid];
 
 			return sortingBlock(group, collectionKey.collection, collectionKey.key,        object,        metadata,
 			                                 another.collection,       another.key, anotherObject, anotherMetadata);
