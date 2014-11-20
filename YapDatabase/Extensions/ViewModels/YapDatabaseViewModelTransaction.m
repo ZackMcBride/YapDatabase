@@ -19,6 +19,12 @@
     static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 #endif
 
+@interface YapDatabaseViewModelTransaction ()
+
+@property (nonatomic, strong) YapDatabaseConnection *storageConnection;
+
+@end
+
 @implementation YapDatabaseViewModelTransaction
 
 @synthesize databaseTransaction = databaseTransaction;
@@ -30,6 +36,7 @@
     if (self) {
         viewModelConnection = inViewModelConnection;
         databaseTransaction = inDatabaseTransaction;
+        _storageConnection = [viewModelConnection->viewModel->setup.storageDatabase newConnection];
     }
     return self;
 }
@@ -121,7 +128,7 @@
 {
 	YDBLogAutoTrace();
 
-    [[viewModelConnection->viewModel->setup.storageDatabase newConnection] readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+    [self.storageConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         isMutated = YES;
         [transaction setObject:object forKey:primarykey inCollection:collection];
     }];
@@ -129,7 +136,7 @@
 
 - (void)removeViewModelRowWithPrimaryKey:(NSString *)primaryKey inCollection:(NSString *)collection
 {
-    [[viewModelConnection->viewModel->setup.storageDatabase newConnection] readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+    [self.storageConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         isMutated = YES;
         [transaction removeObjectForKey:primaryKey inCollection:collection];
     }];
@@ -137,8 +144,7 @@
 
 - (void)removeAllViewModels
 {
-	YapDatabaseConnection *connection = [viewModelConnection->viewModel->setup.storageDatabase newConnection];
-    [connection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+    [self.storageConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         [transaction removeAllObjectsInAllCollections];
     }];
 
@@ -147,8 +153,7 @@
 
 - (void)removeAllViewModelsInCollection:(NSString *)viewModelCollectionName
 {
-    YapDatabaseConnection *connection = [viewModelConnection->viewModel->setup.storageDatabase newConnection];
-    [connection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+    [self.storageConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         [transaction removeAllObjectsInAllCollections];
     }];
 
@@ -354,7 +359,7 @@
             NSString *viewModelColumnName = viewModel->setup.interpretedColumnNameForSourceCollection(collection);
             if (viewModelColumnName)
             {
-                [[viewModel->setup.storageDatabase newConnection] readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+                [self.storageConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
                     __block NSString *viewModelKey;
 
                     [transaction enumerateKeysAndObjectsInCollection:viewModel.registeredName usingBlock:^(NSString *key, id object, BOOL *stop) {
@@ -405,7 +410,7 @@
 
 - (id)viewModelObjectForPrimaryKey:(NSString *)primaryKey {
     __block id object;
-    [[viewModelConnection->viewModel->setup.storageDatabase newConnection] readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+    [self.storageConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         object = [transaction objectForKey:primaryKey inCollection:viewModelConnection->viewModel.registeredName];
     }];
     return object;
