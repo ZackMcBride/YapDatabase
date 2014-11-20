@@ -79,148 +79,6 @@ static NSString *const ExtKey_version_deprecated = @"version";
 **/
 @implementation YapDatabaseViewTransaction
 
-- (id)our_metadataForCollectionKey:(YapCollectionKey *)cacheKey withRowid:(int64_t)rowid
-{
-    return [databaseTransaction metadataForCollectionKey:cacheKey withRowid:rowid];
-}
-
-- (YapCollectionKey *)our_collectionKeyForRowid:(int64_t)rowid
-{
-    return [databaseTransaction collectionKeyForRowid:rowid];
-}
-
-- (id)our_objectForCollectionKey:(YapCollectionKey *)cacheKey withRowid:(int64_t)rowid
-{
-    return [databaseTransaction objectForCollectionKey:cacheKey withRowid:rowid];
-}
-
-- (BOOL)our_getCollectionKey:(YapCollectionKey **)collectionKeyPtr object:(id *)objectPtr forRowid:(int64_t)rowid
-{
-    return [databaseTransaction getCollectionKey:collectionKeyPtr object:objectPtr forRowid:rowid];
-}
-
-- (BOOL)our_getCollectionKey:(YapCollectionKey **)collectionKeyPtr metadata:(id *)metadataPtr forRowid:(int64_t)rowid
-{
-    return [databaseTransaction getCollectionKey:collectionKeyPtr metadata:metadataPtr forRowid:rowid];
-}
-
-- (BOOL)our_getCollectionKey:(YapCollectionKey **)collectionKeyPtr
-                      object:(id *)objectPtr
-                    metadata:(id *)metadataPtr
-                    forRowid:(int64_t)rowid
-{
-    return [databaseTransaction getCollectionKey:collectionKeyPtr object:objectPtr metadata:metadataPtr forRowid:rowid];
-}
-
-- (BOOL)our_getRowid:(int64_t *)rowidPtr forKey:(NSString *)key inCollection:(NSString *)collection
-{
-    return [databaseTransaction getRowid:rowidPtr forKey:key inCollection:collection];
-}
-
-- (void)our_enumerateCollectionsUsingBlock:(void (^)(NSString *collection, BOOL *stop))block
-{
-    [databaseTransaction enumerateCollectionsUsingBlock:block];
-}
-
-- (void)our__enumerateRowsInCollections:(NSArray *)collections usingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop))block
-{
-    [databaseTransaction _enumerateRowsInCollections:collections usingBlock:block];
-}
-
-- (void)our__enumerateRowsInAllCollectionsUsingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop))block
-{
-    [databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:block];
-}
-
-- (void)our__enumerateRowsInCollections:(NSArray *)collections
-                             usingBlock:(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop))block
-                             withFilter:(BOOL (^)(int64_t rowid, NSString *collection, NSString *key))filter
-{
-    [databaseTransaction _enumerateRowsInCollections:collections usingBlock:block withFilter:filter];
-}
-
-- (void)our__enumerateRowsInAllCollectionsUsingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, id metadata, BOOL *stop))block
-                                          withFilter:(BOOL (^)(int64_t rowid, NSString *collection, NSString *key))filter
-{
-    [databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:block withFilter:filter];
-}
-
-- (void)our__enumerateKeysAndObjectsInCollections:(NSArray *)collections usingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop))block
-{
-    [databaseTransaction _enumerateKeysAndObjectsInCollections:collections usingBlock:block];
-}
-
-- (void)our__enumerateKeysAndObjectsInAllCollectionsUsingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop))block
-{
-    [databaseTransaction _enumerateKeysAndObjectsInAllCollectionsUsingBlock:block];
-}
-
-- (void)our__enumerateKeysAndObjectsInCollections:(NSArray *)collections
-                                       usingBlock:(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop))block
-                                       withFilter:(BOOL (^)(int64_t rowid, NSString *collection, NSString *key))filter
-{
-    [databaseTransaction _enumerateKeysAndObjectsInCollections:collections usingBlock:block withFilter:filter];
-}
-
-- (void)our__enumerateKeysAndObjectsInAllCollectionsUsingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id object, BOOL *stop))block
-                                                    withFilter:(BOOL (^)(int64_t rowid, NSString *collection, NSString *key))filter
-{
-    [databaseTransaction _enumerateKeysAndObjectsInAllCollectionsUsingBlock:block withFilter:filter];
-}
-
-- (void)our__enumerateKeysAndMetadataInCollections:(NSArray *)collections
-                                        usingBlock:(void (^)(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop))block
-{
-    [databaseTransaction _enumerateKeysAndMetadataInCollections:collections usingBlock:block];
-}
-
-
-- (void)our__enumerateKeysAndMetadataInCollections:(NSArray *)collections
-                                        usingBlock:(void (^)(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop))block
-                                        withFilter:(BOOL (^)(int64_t rowid, NSString *collection, NSString *key))filter
-{
-    [databaseTransaction _enumerateKeysAndMetadataInCollections:collections usingBlock:block withFilter:filter];
-}
-
-- (void)our__enumerateKeysAndMetadataInAllCollectionsUsingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop))block
-{
-    [databaseTransaction _enumerateKeysAndMetadataInAllCollectionsUsingBlock:block];
-}
-
-- (void)our__enumerateKeysAndMetadataInAllCollectionsUsingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, id metadata, BOOL *stop))block
-                                                     withFilter:(BOOL (^)(int64_t rowid, NSString *collection, NSString *key))filter
-{
-    [databaseTransaction _enumerateKeysAndMetadataInAllCollectionsUsingBlock:block withFilter:filter];
-}
-
-- (void)our__enumerateKeysInCollections:(NSArray *)collections
-                             usingBlock:(void (^)(int64_t rowid, NSString *collection, NSString *key, BOOL *stop))block
-{
-    [databaseTransaction _enumerateKeysInCollections:collections usingBlock:block];
-}
-
-- (void)our__enumerateKeysInAllCollectionsUsingBlock:
-(void (^)(int64_t rowid, NSString *collection, NSString *key, BOOL *stop))block
-{
-    [databaseTransaction _enumerateKeysInAllCollectionsUsingBlock:block];
-}
-
-- (BOOL)our_getObject:(id *)objectPtr
-             metadata:(id *)metadataPtr
-     forCollectionKey:(YapCollectionKey *)collectionKey
-            withRowid:(int64_t)rowid
-{
-    return [databaseTransaction getObject:objectPtr metadata:metadataPtr forCollectionKey:collectionKey withRowid:rowid];
-}
-
 - (id)initWithViewConnection:(YapDatabaseViewConnection *)inViewConnection
          databaseTransaction:(YapDatabaseReadTransaction *)inDatabaseTransaction
 {
@@ -900,16 +758,16 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[self our_enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *outerStop) {
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *outerStop) {
 					
 					if ([allowedCollections isAllowed:collection]) {
-						[self our__enumerateRowsInCollections:@[ collection ] usingBlock:block];
+						[databaseTransaction _enumerateRowsInCollections:@[ collection ] usingBlock:block];
 					}
 				}];
 			}
 			else // if (!allowedCollections)
 			{
-				[self our__enumerateRowsInAllCollectionsUsingBlock:block];
+				[databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:block];
 			}
 		}
 		else
@@ -941,11 +799,11 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[self our_enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
 					
 					if ([allowedCollections isAllowed:collection])
 					{
-						[self our__enumerateRowsInCollections:@[ collection ]
+						[databaseTransaction _enumerateRowsInCollections:@[ collection ]
 						                                      usingBlock:block
 						                                      withFilter:filter];
 					}
@@ -953,7 +811,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			}
 			else // if (!allowedCollections)
 			{
-				[self our__enumerateRowsInAllCollectionsUsingBlock:block withFilter:filter];
+				[databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:block withFilter:filter];
 			}
 		}
 	}
@@ -980,18 +838,18 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[self our_enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
 					
 					if ([allowedCollections isAllowed:collection])
 					{
-						[self our__enumerateKeysAndObjectsInCollections:@[ collection ]
+						[databaseTransaction _enumerateKeysAndObjectsInCollections:@[ collection ]
 						                                                usingBlock:block];
 					}
 				}];
 			}
 			else // if (!allowedCollections)
 			{
-				[self our__enumerateKeysAndObjectsInAllCollectionsUsingBlock:block];
+				[databaseTransaction _enumerateKeysAndObjectsInAllCollectionsUsingBlock:block];
 			}
 		}
 		else
@@ -1023,11 +881,11 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[self our_enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
 					
 					if ([allowedCollections isAllowed:collection])
 					{
-						[self our__enumerateKeysAndObjectsInCollections:@[ collection ]
+						[databaseTransaction _enumerateKeysAndObjectsInCollections:@[ collection ]
 						                                                usingBlock:block
 						                                                withFilter:filter];
 					}
@@ -1035,7 +893,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			}
 			else // if (!allowedCollections)
 			{
-				[self our__enumerateKeysAndObjectsInAllCollectionsUsingBlock:block withFilter:filter];
+				[databaseTransaction _enumerateKeysAndObjectsInAllCollectionsUsingBlock:block withFilter:filter];
 			}
 		}
 	}
@@ -1063,18 +921,18 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[self our_enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
 					
 					if ([allowedCollections isAllowed:collection])
 					{
-						[self our__enumerateKeysAndMetadataInCollections:@[ collection ]
+						[databaseTransaction _enumerateKeysAndMetadataInCollections:@[ collection ]
 						                                                 usingBlock:block];
 					}
 				}];
 			}
 			else  // if (!allowedCollections)
 			{
-				[self our__enumerateKeysAndMetadataInAllCollectionsUsingBlock:block];
+				[databaseTransaction _enumerateKeysAndMetadataInAllCollectionsUsingBlock:block];
 			}
 		}
 		else
@@ -1106,11 +964,11 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[self our_enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
 					
 					if ([allowedCollections isAllowed:collection])
 					{
-						[self our__enumerateKeysAndMetadataInCollections:@[ collection ]
+						[databaseTransaction _enumerateKeysAndMetadataInCollections:@[ collection ]
 						                                                 usingBlock:block
 						                                                 withFilter:filter];
 					}
@@ -1118,7 +976,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			}
 			else  // if (!allowedCollections)
 			{
-				[self our__enumerateKeysAndMetadataInAllCollectionsUsingBlock:block withFilter:filter];
+				[databaseTransaction _enumerateKeysAndMetadataInAllCollectionsUsingBlock:block withFilter:filter];
 			}
 		}
 	}
@@ -1143,17 +1001,17 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 		if (allowedCollections)
 		{
-			[self our_enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+			[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
 				
 				if ([allowedCollections isAllowed:collection])
 				{
-					[self our__enumerateKeysInCollections:@[ collection ] usingBlock:block];
+					[databaseTransaction _enumerateKeysInCollections:@[ collection ] usingBlock:block];
 				}
 			}];
 		}
 		else  // if (!allowedCollections)
 		{
-			[self our__enumerateKeysInAllCollectionsUsingBlock:block];
+			[databaseTransaction _enumerateKeysInAllCollectionsUsingBlock:block];
 		}
 	}
 	
@@ -1195,7 +1053,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		                 withOptions:NSEnumerationReverse
 		                  usingBlock:^(int64_t rowid, NSUInteger index, BOOL *innerStop)
 		{
-			YapCollectionKey *collectionKey = [self our_collectionKeyForRowid:rowid];
+			YapCollectionKey *collectionKey = [databaseTransaction collectionKeyForRowid:rowid];
 			
 			[viewConnection->changes addObject:
 			  [YapDatabaseViewRowChange deleteCollectionKey:collectionKey inGroup:group atIndex:index]];
@@ -2060,7 +1918,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			__unsafe_unretained YapDatabaseViewSortingWithKeyBlock sortingBlock =
 			    (YapDatabaseViewSortingWithKeyBlock)sortingBlock_generic;
 			
-			YapCollectionKey *another = [self our_collectionKeyForRowid:anotherRowid];
+			YapCollectionKey *another = [databaseTransaction collectionKeyForRowid:anotherRowid];
 			
 			return sortingBlock(group, collectionKey.collection, collectionKey.key,
 			                                 another.collection,       another.key);
@@ -2072,7 +1930,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			
 			YapCollectionKey *another = nil;
 			id anotherObject = nil;
-			[self our_getCollectionKey:&another
+			[databaseTransaction getCollectionKey:&another
                                 object:&anotherObject
                               forRowid:anotherRowid];
 
@@ -2086,7 +1944,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			
 			YapCollectionKey *another = nil;
 			id anotherMetadata = nil;
-			[self our_getCollectionKey:&another
+			[databaseTransaction getCollectionKey:&another
                               metadata:&anotherMetadata
                               forRowid:anotherRowid];
 
@@ -2101,7 +1959,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapCollectionKey *another = nil;
 			id anotherObject = nil;
 			id anotherMetadata = nil;
-			[self our_getCollectionKey:&another
+			[databaseTransaction getCollectionKey:&another
                                 object:&anotherObject
                               metadata:&anotherMetadata
                               forRowid:anotherRowid];
@@ -3707,7 +3565,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			if (sortingBlockType == YapDatabaseViewBlockTypeWithRow)
 			{
 				// Need the metadata for the sorting block
-				metadata = [self our_metadataForCollectionKey:collectionKey withRowid:rowid];
+				metadata = [databaseTransaction metadataForCollectionKey:collectionKey withRowid:rowid];
 			}
 			
 			YapDatabaseViewChangesBitMask flags = YapDatabaseViewChangedObject;
@@ -3743,7 +3601,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 				__unsafe_unretained YapDatabaseViewGroupingWithRowBlock groupingBlock =
 			        (YapDatabaseViewGroupingWithRowBlock)groupingBlock_generic;
 				
-				metadata = [self our_metadataForCollectionKey:collectionKey withRowid:rowid];
+				metadata = [databaseTransaction metadataForCollectionKey:collectionKey withRowid:rowid];
 				group = groupingBlock(collection, key, object, metadata);
 			}
 		}
@@ -3790,7 +3648,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			                        sortingBlockType == YapDatabaseViewBlockTypeWithMetadata))
 			{
 				// Need the metadata for the sorting block
-				metadata = [self our_metadataForCollectionKey:collectionKey withRowid:rowid];
+				metadata = [databaseTransaction metadataForCollectionKey:collectionKey withRowid:rowid];
 			}
 			
 			YapDatabaseViewChangesBitMask flags = YapDatabaseViewChangedObject;
@@ -3870,7 +3728,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			if (sortingBlockType == YapDatabaseViewBlockTypeWithRow)
 			{
 				// Need the object for the sorting block
-				object = [self our_objectForCollectionKey:collectionKey withRowid:rowid];
+				object = [databaseTransaction objectForCollectionKey:collectionKey withRowid:rowid];
 			}
 			
 			YapDatabaseViewChangesBitMask flags = YapDatabaseViewChangedMetadata;
@@ -3906,7 +3764,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 				__unsafe_unretained YapDatabaseViewGroupingWithRowBlock groupingBlock =
 			        (YapDatabaseViewGroupingWithRowBlock)groupingBlock_generic;
 				
-				object = [self our_objectForCollectionKey:collectionKey withRowid:rowid];
+				object = [databaseTransaction objectForCollectionKey:collectionKey withRowid:rowid];
 				group = groupingBlock(collection, key, object, metadata);
 			}
 		}
@@ -3953,7 +3811,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			                      sortingBlockType == YapDatabaseViewBlockTypeWithObject))
 			{
 				// Need the object for the sorting block
-				object = [self our_objectForCollectionKey:collectionKey withRowid:rowid];
+				object = [databaseTransaction objectForCollectionKey:collectionKey withRowid:rowid];
 			}
 			
 			YapDatabaseViewChangesBitMask flags = YapDatabaseViewChangedMetadata;
@@ -4274,7 +4132,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	int64_t rowid = 0;
 	if ([self getRowid:&rowid atIndex:index inGroup:group])
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		if (ck)
 		{
 			if (collectionPtr) *collectionPtr = ck.collection;
@@ -4298,7 +4156,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	int64_t rowid = 0;
 	if ([self getLastRowid:&rowid inGroup:group])
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		if (ck)
 		{
 			if (collectionPtr) *collectionPtr = ck.collection;
@@ -4337,7 +4195,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		collection = @"";
 	
 	int64_t rowid;
-	if ([self our_getRowid:&rowid forKey:key inCollection:collection])
+	if ([databaseTransaction getRowid:&rowid forKey:key inCollection:collection])
 	{
 		return [viewConnection->state groupForPageKey:[self pageKeyForRowid:rowid]];
 	}
@@ -4366,7 +4224,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	NSUInteger index = 0;
 	
 	int64_t rowid = 0;
-	if ([self our_getRowid:&rowid forKey:key inCollection:collection])
+	if ([databaseTransaction getRowid:&rowid forKey:key inCollection:collection])
 	{
 		// Query the database to see if the given key is in the view.
 		// If it is, the query will return the corresponding page the key is in.
@@ -4489,7 +4347,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			__unsafe_unretained YapDatabaseViewFindWithKeyBlock findBlock =
 			    (YapDatabaseViewFindWithKeyBlock)block;
 			
-			YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+			YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 			
 			return findBlock(ck.collection, ck.key);
 		}
@@ -4500,7 +4358,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			
 			YapCollectionKey *ck = nil;
 			id object = nil;
-			[self our_getCollectionKey:&ck object:&object forRowid:rowid];
+			[databaseTransaction getCollectionKey:&ck object:&object forRowid:rowid];
 			
 			return findBlock(ck.collection, ck.key, object);
 		}
@@ -4511,7 +4369,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			
 			YapCollectionKey *ck = nil;
 			id metadata = nil;
-			[self our_getCollectionKey:&ck metadata:&metadata forRowid:rowid];
+			[databaseTransaction getCollectionKey:&ck metadata:&metadata forRowid:rowid];
 			
 			return findBlock(ck.collection, ck.key, metadata);
 		}
@@ -4523,7 +4381,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapCollectionKey *ck = nil;
 			id object = nil;
 			id metadata = nil;
-			[self our_getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
+			[databaseTransaction getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
 			
 			return findBlock(ck.collection, ck.key, object, metadata);
 		}
@@ -4639,7 +4497,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	
 	[self enumerateRowidsInGroup:group usingBlock:^(int64_t rowid, NSUInteger index, BOOL *stop) {
 		
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		
 		block(ck.collection, ck.key, index, stop);
 	}];
@@ -4653,7 +4511,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	
 	[self enumerateRowidsInGroup:group withOptions:options usingBlock:^(int64_t rowid, NSUInteger index, BOOL *stop) {
 		
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		
 		block(ck.collection, ck.key, index, stop);
 	}];
@@ -4671,7 +4529,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	                       range:range
 	                  usingBlock:^(int64_t rowid, NSUInteger index, BOOL *stop)
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		
 		block(ck.collection, ck.key, index, stop);
 	}];
@@ -5038,7 +4896,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	}
 	
 	int64_t rowid = 0;
-	if ([self our_getRowid:&rowid forKey:key inCollection:collection])
+	if ([databaseTransaction getRowid:&rowid forKey:key inCollection:collection])
 	{
 		NSString *pageKey = [self pageKeyForRowid:rowid];
 		if (pageKey)
@@ -5077,7 +4935,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	    sortingBlockType  == YapDatabaseViewBlockTypeWithRow     )
 	{
 		int64_t rowid = 0;
-		if ([self our_getRowid:&rowid forKey:key inCollection:collection])
+		if ([databaseTransaction getRowid:&rowid forKey:key inCollection:collection])
 		{
 			NSString *pageKey = [self pageKeyForRowid:rowid];
 			if (pageKey)
@@ -5117,7 +4975,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	    sortingBlockType  == YapDatabaseViewBlockTypeWithRow       )
 	{
 		int64_t rowid = 0;
-		if ([self our_getRowid:&rowid forKey:key inCollection:collection])
+		if ([databaseTransaction getRowid:&rowid forKey:key inCollection:collection])
 		{
 			NSString *pageKey = [self pageKeyForRowid:rowid];
 			if (pageKey)
@@ -5230,9 +5088,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	int64_t rowid = 0;
 	if ([self getRowid:&rowid atIndex:index inGroup:group])
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		
-		return [self our_metadataForCollectionKey:ck withRowid:rowid];
+		return [databaseTransaction metadataForCollectionKey:ck withRowid:rowid];
 	}
 	else
 	{
@@ -5245,9 +5103,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	int64_t rowid = 0;
 	if ([self getRowid:&rowid atIndex:index inGroup:group])
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		
-		return [self our_objectForCollectionKey:ck withRowid:rowid];
+		return [databaseTransaction objectForCollectionKey:ck withRowid:rowid];
 	}
 	
 	return nil;
@@ -5263,9 +5121,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	int64_t rowid = 0;
 	if ([self getLastRowid:&rowid inGroup:group])
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		
-		return [self our_objectForCollectionKey:ck withRowid:rowid];
+		return [databaseTransaction objectForCollectionKey:ck withRowid:rowid];
 	}
 	
 	return nil;
@@ -5286,7 +5144,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		
 		YapCollectionKey *ck = nil;
 		id metadata = nil;
-		[self our_getCollectionKey:&ck metadata:&metadata forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck metadata:&metadata forRowid:rowid];
 		
 		block(ck.collection, ck.key, metadata, index, stop);
 	}];
@@ -5305,7 +5163,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	{
 		YapCollectionKey *ck = nil;
 		id metadata = nil;
-		[self our_getCollectionKey:&ck metadata:&metadata forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck metadata:&metadata forRowid:rowid];
 						  
 		block(ck.collection, ck.key, metadata, index, stop);
 	}];
@@ -5326,7 +5184,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	{
 		YapCollectionKey *ck = nil;
 		id metadata = nil;
-		[self our_getCollectionKey:&ck metadata:&metadata forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck metadata:&metadata forRowid:rowid];
 		
 		block(ck.collection, ck.key, metadata, index, stop);
 	}];
@@ -5351,10 +5209,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	                       range:range
 	                  usingBlock:^(int64_t rowid, NSUInteger index, BOOL *stop)
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		if (filter(ck.collection, ck.key))
 		{
-			id metadata = [self our_metadataForCollectionKey:ck withRowid:rowid];
+			id metadata = [databaseTransaction metadataForCollectionKey:ck withRowid:rowid];
 		
 			block(ck.collection, ck.key, metadata, index, stop);
 		}
@@ -5376,7 +5234,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		
 		YapCollectionKey *ck = nil;
 		id object = nil;
-		[self our_getCollectionKey:&ck object:&object forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck object:&object forRowid:rowid];
 		
 		block(ck.collection, ck.key, object, index, stop);
 	}];
@@ -5395,7 +5253,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	{
 		YapCollectionKey *ck = nil;
 		id object = nil;
-		[self our_getCollectionKey:&ck object:&object forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck object:&object forRowid:rowid];
 		
 		block(ck.collection, ck.key, object, index, stop);
 	}];
@@ -5416,7 +5274,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	{
 		YapCollectionKey *ck = nil;
 		id object = nil;
-		[self our_getCollectionKey:&ck object:&object forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck object:&object forRowid:rowid];
 		
 		block(ck.collection, ck.key, object, index, stop);
 	}];
@@ -5441,10 +5299,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	                       range:range
 	                  usingBlock:^(int64_t rowid, NSUInteger index, BOOL *stop)
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		if (filter(ck.collection, ck.key))
 		{
-			id object = [self our_objectForCollectionKey:ck withRowid:rowid];
+			id object = [databaseTransaction objectForCollectionKey:ck withRowid:rowid];
 			
 			block(ck.collection, ck.key, object, index, stop);
 		}
@@ -5467,7 +5325,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		YapCollectionKey *ck = nil;
 		id object = nil;
 		id metadata = nil;
-		[self our_getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
 		
 		block(ck.collection, ck.key, object, metadata, index, stop);
 	}];
@@ -5487,7 +5345,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		YapCollectionKey *ck = nil;
 		id object = nil;
 		id metadata = nil;
-		[self our_getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
 		
 		block(ck.collection, ck.key, object, metadata, index, stop);
 	}];
@@ -5509,7 +5367,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		YapCollectionKey *ck = nil;
 		id object = nil;
 		id metadata = nil;
-		[self our_getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
+		[databaseTransaction getCollectionKey:&ck object:&object metadata:&metadata forRowid:rowid];
 		
 		block(ck.collection, ck.key, object, metadata, index, stop);
 	}];
@@ -5534,12 +5392,12 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	                       range:range
 	                  usingBlock:^(int64_t rowid, NSUInteger index, BOOL *stop)
 	{
-		YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+		YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 		if (filter(ck.collection, ck.key))
 		{
 			id object = nil;
 			id metadata = nil;
-			[self our_getObject:&object metadata:&metadata forCollectionKey:ck withRowid:rowid];
+			[databaseTransaction getObject:&object metadata:&metadata forCollectionKey:ck withRowid:rowid];
 			
 			block(ck.collection, ck.key, object, metadata, index, stop);
 		}
@@ -5605,7 +5463,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			{
 				if (collectionKeyPtr)
 				{
-					YapCollectionKey *ck = [self our_collectionKeyForRowid:rowid];
+					YapCollectionKey *ck = [databaseTransaction collectionKeyForRowid:rowid];
 					*collectionKeyPtr = ck;
 				}
 				
@@ -5758,7 +5616,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	
 	if ([self getRowid:&rowid collectionKey:&ck forRow:row inSection:section withMappings:mappings])
 	{
-		object = [self our_objectForCollectionKey:ck withRowid:rowid];
+		object = [databaseTransaction objectForCollectionKey:ck withRowid:rowid];
 	}
 	
 	return object;
@@ -5787,7 +5645,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	
 	if ([self getRowid:&rowid collectionKey:&ck forRow:row inSection:section withMappings:mappings])
 	{
-		object = [self our_objectForCollectionKey:ck withRowid:rowid];
+		object = [databaseTransaction objectForCollectionKey:ck withRowid:rowid];
 	}
 	
 	return object;
@@ -5825,7 +5683,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	
 	if ([self getRowid:&rowid collectionKey:&ck forRow:row inSection:section withMappings:mappings])
 	{
-		metadata = [self our_metadataForCollectionKey:ck withRowid:rowid];
+		metadata = [databaseTransaction metadataForCollectionKey:ck withRowid:rowid];
 	}
 	
 	return metadata;
@@ -5854,7 +5712,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	
 	if ([self getRowid:&rowid collectionKey:&ck forRow:row inSection:section withMappings:mappings])
 	{
-		metadata = [self our_metadataForCollectionKey:ck withRowid:rowid];
+		metadata = [databaseTransaction metadataForCollectionKey:ck withRowid:rowid];
 	}
 	
 	return metadata;
