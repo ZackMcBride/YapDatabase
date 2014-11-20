@@ -345,16 +345,31 @@
 		return;
 	}
 
-//    NSString *viewModelPrimaryKey = viewModel->setup.primaryKeyForObjectInCollection(object, collection);
-//    BOOL shouldProcessDelete = [viewModel->setup.relatedCollections containsObject:collection];
-//
-//    if (shouldProcessDelete) {
-//        NSSet *deletionClasses = viewModel->setup.deletionClasses;
-//
-//        if ([deletionClasses containsObject:collection]) {
-//            [self removeViewModelRowWithPrimaryKey:viewModelPrimaryKey inCollection:viewModel.registeredName];
-//        }
-//    }
+    BOOL shouldProcessDelete = [viewModel->setup.relatedCollections containsObject:collection];
+    if (shouldProcessDelete)
+    {
+        NSSet *deletionClasses = viewModel->setup.deletionClasses;
+        if ([deletionClasses containsObject:collection])
+        {
+            NSString *viewModelColumnName = viewModel->setup.interpretedColumnNameForSourceCollection(collection);
+            if (viewModelColumnName)
+            {
+                [[viewModel->setup.storageDatabase newConnection] readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+                    __block NSString *viewModelKey;
+
+                    [transaction enumerateKeysAndObjectsInCollection:viewModel.registeredName usingBlock:^(NSString *key, id object, BOOL *stop) {
+                        if ([[object valueForKeyPath:viewModelColumnName] isEqualToString:key]) {
+                            viewModelKey = key;
+                            *stop = YES;
+                        }
+                    }];
+
+                    [transaction removeObjectForKey:viewModelKey inCollection:viewModel.registeredName];
+                }];
+
+            }
+        }
+    }
 }
 
 /**

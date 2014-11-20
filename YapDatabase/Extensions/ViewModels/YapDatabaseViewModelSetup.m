@@ -21,6 +21,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 @interface YapDatabaseViewModelSetup ()
 
 @property (nonatomic, copy) NSString *(^primaryKeyForObjectInCollection)(id object, NSString *collection);
+@property (nonatomic, copy) NSString *(^interpretedColumnNameForSourceCollection)(NSString *collection);
 @property (nonatomic, strong) NSSet *relatedCollections;
 @property (nonatomic, strong) NSSet *deletionClasses;
 @property (nonatomic, strong) YapDatabase *storageDatabase;
@@ -30,6 +31,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 @implementation YapDatabaseViewModelSetup
 
 - (instancetype)initWithRelatedCollections:(NSSet *)relatedCollections
+       interpretedColumnNameForSourceCollection:(NSString *(^)(NSString *collection))interpretedColumnNameForSourceCollectionBlock
       primaryKeyForObjectInCollectionBlock:(NSString *(^)(id, NSString *))primaryKeyForObjectInCollectionBlock
                  deleteViewModelForClasses:(NSSet *)classes
                            storageDatabase:(YapDatabase *)storageDatabase
@@ -37,6 +39,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
     self = [super init];
     if (self) {
         _relatedCollections = relatedCollections;
+        _interpretedColumnNameForSourceCollection = interpretedColumnNameForSourceCollectionBlock;
         _primaryKeyForObjectInCollection = primaryKeyForObjectInCollectionBlock;
         _deletionClasses = classes;
         _storageDatabase = storageDatabase;
@@ -55,6 +58,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	YapDatabaseViewModelSetup *copy = [[YapDatabaseViewModelSetup alloc] initForCopy];
 	copy.relatedCollections = [self.relatedCollections copy];
     copy.primaryKeyForObjectInCollection = self.primaryKeyForObjectInCollection;
+    copy.interpretedColumnNameForSourceCollection = self.interpretedColumnNameForSourceCollection;
     copy.deletionClasses = self.deletionClasses;
     copy.storageDatabase = self.storageDatabase;
 
