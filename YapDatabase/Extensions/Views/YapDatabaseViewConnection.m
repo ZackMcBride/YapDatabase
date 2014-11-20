@@ -145,11 +145,11 @@
 - (id)newReadTransaction:(YapDatabaseReadTransaction *)databaseTransaction
 {
 	YDBLogAutoTrace();
-
-    YapDatabaseViewTransaction *transaction =
-        [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
-                                               databaseTransaction:databaseTransaction];
-
+	
+	YapDatabaseViewTransaction *transaction =
+	    [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
+	                                           databaseTransaction:databaseTransaction];
+	
 	return transaction;
 }
 
@@ -159,12 +159,11 @@
 - (id)newReadWriteTransaction:(YapDatabaseReadWriteTransaction *)databaseTransaction
 {
 	YDBLogAutoTrace();
-
-    YapDatabaseViewTransaction *transaction =
-        [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
-                                               databaseTransaction:databaseTransaction];
-
-
+	
+	YapDatabaseViewTransaction *transaction =
+	    [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
+	                                           databaseTransaction:databaseTransaction];
+	
 	[self prepareForReadWriteTransaction];
 	return transaction;
 }

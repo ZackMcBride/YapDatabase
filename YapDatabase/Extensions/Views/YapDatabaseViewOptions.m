@@ -20,7 +20,7 @@
 	YapDatabaseViewOptions *copy = [[[self class] alloc] init]; // [self class] required to support subclassing
 	copy->isPersistent = isPersistent;
 	copy->allowedCollections = allowedCollections;
-
+	
 	return copy;
 }
 

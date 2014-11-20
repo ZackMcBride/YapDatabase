@@ -1931,9 +1931,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapCollectionKey *another = nil;
 			id anotherObject = nil;
 			[databaseTransaction getCollectionKey:&another
-                                           object:&anotherObject
-                                         forRowid:anotherRowid];
-
+			                               object:&anotherObject
+			                             forRowid:anotherRowid];
+			
 			return sortingBlock(group, collectionKey.collection, collectionKey.key,        object,
 			                                 another.collection,       another.key, anotherObject);
 		}
@@ -1945,9 +1945,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			YapCollectionKey *another = nil;
 			id anotherMetadata = nil;
 			[databaseTransaction getCollectionKey:&another
-                                         metadata:&anotherMetadata
-                                         forRowid:anotherRowid];
-
+			                             metadata:&anotherMetadata
+			                             forRowid:anotherRowid];
+			
 			return sortingBlock(group, collectionKey.collection, collectionKey.key,        metadata,
 			                                 another.collection,       another.key, anotherMetadata);
 		}
@@ -1960,10 +1960,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			id anotherObject = nil;
 			id anotherMetadata = nil;
 			[databaseTransaction getCollectionKey:&another
-                                           object:&anotherObject
-                                         metadata:&anotherMetadata
-                                         forRowid:anotherRowid];
-
+			                               object:&anotherObject
+			                             metadata:&anotherMetadata
+			                             forRowid:anotherRowid];
+			
 			return sortingBlock(group, collectionKey.collection, collectionKey.key,        object,        metadata,
 			                                 another.collection,       another.key, anotherObject, anotherMetadata);
 		}
@@ -3475,28 +3475,27 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			group = groupingBlock(collection, key, object, metadata);
 		}
 	}
-
-    if (group == nil)
-    {
-        // Remove key from view (if needed).
-        // This was an update operation, so the key may have previously been in the view.
-
-        [self removeRowid:rowid collectionKey:collectionKey];
-    }
-    else
-    {
-        // Add key to view (or update position).
-        // This was an update operation, so the key may have previously been in the view.
-
-        YapDatabaseViewChangesBitMask flags = (YapDatabaseViewChangedObject | YapDatabaseViewChangedMetadata);
-
-        [self insertRowid:rowid
-            collectionKey:collectionKey
-                   object:object
-                 metadata:metadata
-                  inGroup:group withChanges:flags isNew:NO];
-    }
-
+	
+	if (group == nil)
+	{
+		// Remove key from view (if needed).
+		// This was an update operation, so the key may have previously been in the view.
+		
+		[self removeRowid:rowid collectionKey:collectionKey];
+	}
+	else
+	{
+		// Add key to view (or update position).
+		// This was an update operation, so the key may have previously been in the view.
+		
+		YapDatabaseViewChangesBitMask flags = (YapDatabaseViewChangedObject | YapDatabaseViewChangedMetadata);
+		
+		[self insertRowid:rowid
+		    collectionKey:collectionKey
+		           object:object
+		         metadata:metadata
+		          inGroup:group withChanges:flags isNew:NO];
+	}
 	
 	lastHandledGroup = group;
 }
@@ -5386,7 +5385,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		return;
 	}
 	if (block == NULL) return;
-
+	
 	[self enumerateRowidsInGroup:group
 	                 withOptions:options
 	                       range:range
