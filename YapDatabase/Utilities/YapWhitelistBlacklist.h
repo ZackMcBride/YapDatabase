@@ -52,4 +52,6 @@ typedef BOOL (^YapWhitelistBlacklistFilterBlock)(id item);
 **/
 - (BOOL)isAllowed:(id)item;
 
+@property (nonatomic, readonly) NSSet *whitelist;
+
 @end

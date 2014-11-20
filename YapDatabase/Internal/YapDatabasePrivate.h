@@ -309,12 +309,12 @@ extern NSString *const YapDatabaseNotificationKey;
 	
 @protected
 	NSMutableDictionary *extensions;
-	
-	BOOL isMutated; // Used for "mutation during enumeration" protection
-	
+
+    BOOL isMutated; // Used for "mutation during enumeration" protection
+
 @public
 	__unsafe_unretained YapDatabaseConnection *connection;
-	
+
 	BOOL isReadWriteTransaction;
 }
 

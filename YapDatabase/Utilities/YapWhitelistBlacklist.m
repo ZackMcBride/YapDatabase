@@ -58,4 +58,8 @@
 	}
 }
 
+- (NSSet *)whitelist {
+    return whitelist;
+}
+
 @end
