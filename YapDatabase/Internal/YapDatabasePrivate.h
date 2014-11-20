@@ -225,11 +225,9 @@ extern NSString *const YapDatabaseNotificationKey;
 	NSMutableSet *removedCollections;
 	NSMutableSet *removedRowids;
 	BOOL allKeysRemoved;
-
-    NSString *tableName;
 }
 
-- (id)initWithDatabase:(YapDatabase *)database tableName:(NSString *)tableName;
+- (id)initWithDatabase:(YapDatabase *)database;
 
 - (sqlite3_stmt *)beginTransactionStatement;
 - (sqlite3_stmt *)commitTransactionStatement;
