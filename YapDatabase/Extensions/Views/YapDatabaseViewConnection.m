@@ -6,7 +6,6 @@
 #import "YapDatabaseViewChange.h"
 #import "YapDatabaseViewChangePrivate.h"
 #import "YapDatabaseViewMappingsPrivate.h"
-#import "YapDatabaseViewModelViewTransaction.h"
 #import "YapCollectionKey.h"
 #import "YapCache.h"
 #import "YapDatabaseString.h"
@@ -146,20 +145,11 @@
 - (id)newReadTransaction:(YapDatabaseReadTransaction *)databaseTransaction
 {
 	YDBLogAutoTrace();
-
-    YapDatabaseViewTransaction *transaction;
-    if (view.options.isObservingViewModel)
-    {
-        transaction = [[YapDatabaseViewModelViewTransaction alloc] initWithViewConnection:self
-                                                                      databaseTransaction:databaseTransaction
-                                                                                viewModelName:view.options.allowedCollections.whitelist.allObjects.firstObject];
-    }
-    else
-    {
-        transaction = [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
-                                                             databaseTransaction:databaseTransaction];
-    }
-
+	
+	YapDatabaseViewTransaction *transaction =
+	    [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
+	                                           databaseTransaction:databaseTransaction];
+	
 	return transaction;
 }
 
@@ -169,20 +159,11 @@
 - (id)newReadWriteTransaction:(YapDatabaseReadWriteTransaction *)databaseTransaction
 {
 	YDBLogAutoTrace();
-
-    YapDatabaseViewTransaction *transaction;
-    if (view.options.isObservingViewModel)
-    {
-        transaction = [[YapDatabaseViewModelViewTransaction alloc] initWithViewConnection:self
-                                                                      databaseTransaction:databaseTransaction
-                                                                            viewModelName:view.options.allowedCollections.whitelist.allObjects.firstObject];
-    }
-    else
-    {
-        transaction = [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
-                                                             databaseTransaction:databaseTransaction];
-    }
-
+	
+	YapDatabaseViewTransaction *transaction =
+	    [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
+	                                           databaseTransaction:databaseTransaction];
+	
 	[self prepareForReadWriteTransaction];
 	return transaction;
 }
