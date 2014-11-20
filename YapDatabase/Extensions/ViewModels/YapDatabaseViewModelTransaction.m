@@ -628,18 +628,25 @@ static NSString *const ExtKey_version_deprecated = @"version";
  **/
 - (void)handleRemoveObjectForCollectionKey:(YapCollectionKey *)collectionKey withRowid:(int64_t)rowid
 {
-	YDBLogAutoTrace();
-
 	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
 
-	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
-	if (allowedCollections && ![allowedCollections isAllowed:collectionKey.collection])
-	{
+	__unsafe_unretained NSString *collection = collectionKey.collection;
+	__unsafe_unretained NSString *key = collectionKey.key;
+
+    __unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+	if (allowedCollections && ![allowedCollections isAllowed:collection]) {
 		return;
 	}
 
-    //TODO Removals
-//	[self removeRowid:rowid];
+    BOOL shouldProcessDelete = [viewModel->setup.relatedCollections containsObject:collection];
+
+    if (shouldProcessDelete) {
+        NSSet *deletionClasses = viewModel->setup.deletionClasses;
+
+        if ([deletionClasses containsObject:collectionKey.collection]) {
+            [self removeViewModelForRowId:rowid key:collectionKey.key];
+        }
+    }
 }
 
 /**
@@ -658,7 +665,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		return;
 	}
 
-	[self removeRowids:rowids];
+    [keys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
+        [self removeViewModelForRowId:rowids[idx] key:key];
+    }];
 }
 
 /**
@@ -681,6 +690,15 @@ static NSString *const ExtKey_version_deprecated = @"version";
         *stop = YES;
     }];
     return rowId;
+}
+
+- (void)removeViewModelForRowId:(int64_t)rowid key:(NSString *)key {
+    id currentViewModelObject = [self viewModelObjectForPrimaryKey:key];
+
+    if (currentViewModelObject) {
+        rowid = [self rowIdForRowWithPrimaryKey:key];
+        [self removeRowid:rowid];
+    }
 }
 
 - (id)viewModelObjectForPrimaryKey:(NSString *)primaryKey {

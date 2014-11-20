@@ -67,14 +67,19 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 - (id)initWithSetup:(YapDatabaseViewModelSetup *)inSetup
             handler:(YapDatabaseViewModelHandler *)inHandler
 {
-	return [self initWithSetup:inSetup handler:inHandler versionTag:nil options:nil];
+	return [self initWithSetup:inSetup
+                       handler:inHandler
+                    versionTag:nil
+                       options:nil];
 }
 
 - (id)initWithSetup:(YapDatabaseViewModelSetup *)inSetup
             handler:(YapDatabaseViewModelHandler *)inHandler
          versionTag:(NSString *)inVersionTag
 {
-	return [self initWithSetup:inSetup handler:inHandler versionTag:inVersionTag options:nil];
+	return [self initWithSetup:inSetup
+                       handler:inHandler
+                    versionTag:inVersionTag options:nil];
 }
 - (instancetype)initWithSetup:(YapDatabaseViewModelSetup *)inSetup
                       handler:(YapDatabaseViewModelHandler *)inHandler
@@ -91,7 +96,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		return nil;
 	}
 
-	if (inHandler == NULL)
+	if (inHandler == nil)
 	{
 		NSAssert(NO, @"Invalid handler: NULL");
 
