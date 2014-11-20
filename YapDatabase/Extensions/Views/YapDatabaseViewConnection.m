@@ -6,11 +6,11 @@
 #import "YapDatabaseViewChange.h"
 #import "YapDatabaseViewChangePrivate.h"
 #import "YapDatabaseViewMappingsPrivate.h"
+#import "YapDatabaseViewModelViewTransaction.h"
 #import "YapCollectionKey.h"
 #import "YapCache.h"
 #import "YapDatabaseString.h"
 #import "YapDatabaseLogging.h"
-#import "YapDatabaseReadTransactionForViewModelView.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -147,19 +147,18 @@
 {
 	YDBLogAutoTrace();
 
-    YapDatabaseReadTransaction *databaseReadTransaction;
+    YapDatabaseViewTransaction *transaction;
     if (view.options.isObservingViewModel)
     {
-        NSString *viewModelName = view.options.allowedCollections.whitelist.allObjects.firstObject;
-        databaseReadTransaction = [[YapDatabaseReadTransactionForViewModelView alloc] initWithViewModelName:viewModelName connection:databaseTransaction.connection  isReadWriteTransaction:YES];
+        transaction = [[YapDatabaseViewModelViewTransaction alloc] initWithViewConnection:self
+                                                                      databaseTransaction:databaseTransaction
+                                                                                viewModelName:view.options.allowedCollections.whitelist.allObjects.firstObject];
     }
     else
     {
-        databaseReadTransaction = databaseTransaction;
+        transaction = [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
+                                                             databaseTransaction:databaseTransaction];
     }
-
-    YapDatabaseViewTransaction *transaction = [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
-                                                                                     databaseTransaction:databaseReadTransaction];
 
 	return transaction;
 }
@@ -171,19 +170,18 @@
 {
 	YDBLogAutoTrace();
 
-    YapDatabaseReadTransaction *databaseReadWriteTransaction;
+    YapDatabaseViewTransaction *transaction;
     if (view.options.isObservingViewModel)
     {
-        NSString *viewModelName = view.options.allowedCollections.whitelist.allObjects.firstObject;
-        databaseReadWriteTransaction = [[YapDatabaseReadTransactionForViewModelView alloc] initWithViewModelName:viewModelName connection:databaseTransaction.connection  isReadWriteTransaction:YES];
+        transaction = [[YapDatabaseViewModelViewTransaction alloc] initWithViewConnection:self
+                                                                      databaseTransaction:databaseTransaction
+                                                                            viewModelName:view.options.allowedCollections.whitelist.allObjects.firstObject];
     }
     else
     {
-        databaseReadWriteTransaction = databaseTransaction;
+        transaction = [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
+                                                             databaseTransaction:databaseTransaction];
     }
-
-    YapDatabaseViewTransaction *transaction = [[YapDatabaseViewTransaction alloc] initWithViewConnection:self
-                                                                                     databaseTransaction:databaseReadWriteTransaction];
 
 	[self prepareForReadWriteTransaction];
 	return transaction;
