@@ -5,7 +5,7 @@
 
 @synthesize isPersistent = isPersistent;
 @synthesize allowedCollections = allowedCollections;
-@synthesize isObservingViewModel = isObservingViewModel;
+
 - (id)init
 {
 	if ((self = [super init]))
@@ -20,7 +20,6 @@
 	YapDatabaseViewOptions *copy = [[[self class] alloc] init]; // [self class] required to support subclassing
 	copy->isPersistent = isPersistent;
 	copy->allowedCollections = allowedCollections;
-    copy->isObservingViewModel = isObservingViewModel;
 
 	return copy;
 }
