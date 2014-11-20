@@ -1,5 +1,6 @@
 #import "YapDatabaseViewModelSetup.h"
 #import "YapDatabaseLogging.h"
+#import "YapDatabase.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -22,6 +23,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 @property (nonatomic, copy) NSString *(^primaryKeyForObjectInCollection)(id object, NSString *collection);
 @property (nonatomic, strong) NSSet *relatedCollections;
 @property (nonatomic, strong) NSSet *deletionClasses;
+@property (nonatomic, strong) YapDatabase *storageDatabase;
 
 @end
 
@@ -30,12 +32,14 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 - (instancetype)initWithRelatedCollections:(NSSet *)relatedCollections
       primaryKeyForObjectInCollectionBlock:(NSString *(^)(id, NSString *))primaryKeyForObjectInCollectionBlock
                  deleteViewModelForClasses:(NSSet *)classes
+                           storageDatabase:(YapDatabase *)storageDatabase
 {
     self = [super init];
     if (self) {
         _relatedCollections = relatedCollections;
         _primaryKeyForObjectInCollection = primaryKeyForObjectInCollectionBlock;
         _deletionClasses = classes;
+        _storageDatabase = storageDatabase;
     }
     return self;
 }
@@ -52,6 +56,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	copy.relatedCollections = [self.relatedCollections copy];
     copy.primaryKeyForObjectInCollection = self.primaryKeyForObjectInCollection;
     copy.deletionClasses = self.deletionClasses;
+    copy.storageDatabase = self.storageDatabase;
 
 	return copy;
 }

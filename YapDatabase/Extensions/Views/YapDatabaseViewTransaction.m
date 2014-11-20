@@ -3496,6 +3496,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		         metadata:metadata
 		          inGroup:group withChanges:flags isNew:NO];
 	}
+
 	
 	lastHandledGroup = group;
 }
