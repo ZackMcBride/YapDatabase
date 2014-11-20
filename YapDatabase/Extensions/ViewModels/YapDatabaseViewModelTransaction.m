@@ -6,7 +6,6 @@
 #import "YapDatabaseStatement.h"
 #import "YapWhiteListBlacklist.h"
 #import "YapDatabaseQuery.h"
-#import "YapDatabaseViewModelViewTransaction.h"
 
 #import "YapDatabaseLogging.h"
 
@@ -266,70 +265,80 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	return [viewModelConnection->viewModel tableName];
 }
 
-- (void)addViewModelObject:(id)object withPrimaryKey:(NSString *)primarykey rowId:(int64_t)rowid
+- (void)addViewModelObject:(id)object withPrimaryKey:(NSString *)primarykey collection:(NSString *)collection
 {
 	YDBLogAutoTrace();
 
-	sqlite3_stmt *statement = [viewModelConnection insertStatement];
-
-	if (statement == NULL)
-		return;
-
-    YapDatabase *database = viewModelConnection->databaseConnection->database;
-    if (database->objectSanitizer)
-	{
-		object = database->objectSanitizer(nil, primarykey, object);
-		if (object == nil)
-		{
-			YDBLogWarn(@"Object sanitizer returned nil for key(%@) object: %@", primarykey, object);
-			return;
-		}
-	}
-
-    // To use SQLITE_STATIC on our data, we use the objc_precise_lifetime attribute.
-	// This ensures the data isn't released until it goes out of scope.
-    __attribute__((objc_precise_lifetime)) NSData *serializedObject = nil;
-    serializedObject = database->objectSerializer(nil, primarykey, object);
-
-	sqlite3_bind_int64(statement, 1, rowid);
-    sqlite3_bind_text(statement, 2, [primarykey UTF8String], -1, SQLITE_TRANSIENT);
-    sqlite3_bind_blob(statement, 3, serializedObject.bytes, (int)serializedObject.length, SQLITE_STATIC);
-
-	int status = sqlite3_step(statement);
-	if (status != SQLITE_DONE)
-	{
-		YDBLogError(@"Error executing 'insertStatement': %d %s",
-		            status, sqlite3_errmsg(databaseTransaction->connection->db));
-	}
-    
-	sqlite3_clear_bindings(statement);
-	sqlite3_reset(statement);
-    
-	isMutated = YES;
+//	sqlite3_stmt *statement = [viewModelConnection insertStatement];
+//
+//	if (statement == NULL)
+//		return;
+//
+//    YapDatabase *database = viewModelConnection->databaseConnection->database;
+//    if (database->objectSanitizer)
+//	{
+//		object = database->objectSanitizer(nil, primarykey, object);
+//		if (object == nil)
+//		{
+//			YDBLogWarn(@"Object sanitizer returned nil for key(%@) object: %@", primarykey, object);
+//			return;
+//		}
+//	}
+//
+//    // To use SQLITE_STATIC on our data, we use the objc_precise_lifetime attribute.
+//	// This ensures the data isn't released until it goes out of scope.
+//    __attribute__((objc_precise_lifetime)) NSData *serializedObject = nil;
+//    serializedObject = database->objectSerializer(nil, primarykey, object);
+//
+//	sqlite3_bind_int64(statement, 1, rowid);
+//    sqlite3_bind_text(statement, 2, [primarykey UTF8String], -1, SQLITE_TRANSIENT);
+//    sqlite3_bind_blob(statement, 3, serializedObject.bytes, (int)serializedObject.length, SQLITE_STATIC);
+//
+//	int status = sqlite3_step(statement);
+//	if (status != SQLITE_DONE)
+//	{
+//		YDBLogError(@"Error executing 'insertStatement': %d %s",
+//		            status, sqlite3_errmsg(databaseTransaction->connection->db));
+//	}
+//    
+//	sqlite3_clear_bindings(statement);
+//	sqlite3_reset(statement);
+//    
+//	isMutated = YES;
+    [[viewModelConnection->viewModel->setup.storageDatabase newConnection] readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        [transaction setObject:object forKey:primarykey inCollection:collection];
+    }];
 }
 
 - (void)removeRowid:(int64_t)rowid
 {
 	YDBLogAutoTrace();
+//TODO
+//	sqlite3_stmt *statement = [viewModelConnection removeStatement];
+//	if (statement == NULL) return;
+//
+//	// DELETE FROM "tableName" WHERE "rowid" = ?;
+//
+//	sqlite3_bind_int64(statement, 1, rowid);
+//
+//	int status = sqlite3_step(statement);
+//	if (status != SQLITE_DONE)
+//	{
+//		YDBLogError(@"Error executing 'removeStatement': %d %s",
+//		            status, sqlite3_errmsg(databaseTransaction->connection->db));
+//	}
+//
+//	sqlite3_clear_bindings(statement);
+//	sqlite3_reset(statement);
+//
+//	isMutated = YES;
+}
 
-	sqlite3_stmt *statement = [viewModelConnection removeStatement];
-	if (statement == NULL) return;
-
-	// DELETE FROM "tableName" WHERE "rowid" = ?;
-
-	sqlite3_bind_int64(statement, 1, rowid);
-
-	int status = sqlite3_step(statement);
-	if (status != SQLITE_DONE)
-	{
-		YDBLogError(@"Error executing 'removeStatement': %d %s",
-		            status, sqlite3_errmsg(databaseTransaction->connection->db));
-	}
-
-	sqlite3_clear_bindings(statement);
-	sqlite3_reset(statement);
-
-	isMutated = YES;
+- (void)removeViewModelRowWithPrimaryKey:(NSString *)primaryKey inCollection:(NSString *)collection
+{
+    [[viewModelConnection->viewModel->setup.storageDatabase newConnection] readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        [transaction removeObjectForKey:primaryKey inCollection:collection];
+    }];
 }
 
 - (void)removeRowids:(NSArray *)rowids
@@ -481,31 +490,31 @@ static NSString *const ExtKey_version_deprecated = @"version";
         }
 
         if (currentViewModelObject) {
-            int64_t existingRowId = [self rowIdForRowWithPrimaryKey:viewModelPrimaryKey];
-            if (existingRowId != -1) {
-                rowid = existingRowId;
-            }
+//            int64_t existingRowId = [self rowIdForRowWithPrimaryKey:viewModelPrimaryKey];
+//            if (existingRowId != -1) {
+//                rowid = existingRowId;
+//            }
 
-            [self addViewModelObject:currentViewModelObject withPrimaryKey:viewModelPrimaryKey rowId:rowid];
+            [self addViewModelObject:currentViewModelObject withPrimaryKey:viewModelPrimaryKey collection:viewModel.registeredName];
 
-            YapCollectionKey *collectionKey = [[YapCollectionKey alloc] initWithCollection:[viewModel registeredName] key:viewModelPrimaryKey];
-            for (YapDatabaseExtensionTransaction *extTransaction in [databaseTransaction orderedExtensions])
-            {
-                if ([extTransaction isKindOfClass:YapDatabaseViewModelViewTransaction.class]) {
-                    YapDatabaseViewTransaction *viewTransaction = (YapDatabaseViewTransaction *)extTransaction;
-                    if (existingRowId != -1)
-                        [extTransaction handleUpdateObject:currentViewModelObject
-                                          forCollectionKey:collectionKey
-                                              withMetadata:metadata
-                                                     rowid:rowid];
-                    else
-                        [extTransaction handleInsertObject:currentViewModelObject
-                                          forCollectionKey:collectionKey
-                                              withMetadata:metadata
-                                                     rowid:rowid];
-
-                }
-            }
+//            YapCollectionKey *collectionKey = [[YapCollectionKey alloc] initWithCollection:[viewModel registeredName] key:viewModelPrimaryKey];
+//            for (YapDatabaseExtensionTransaction *extTransaction in [databaseTransaction orderedExtensions])
+//            {
+//                if ([extTransaction isKindOfClass:YapDatabaseViewModelViewTransaction.class]) {
+//                    YapDatabaseViewTransaction *viewTransaction = (YapDatabaseViewTransaction *)extTransaction;
+//                    if (existingRowId != -1)
+//                        [extTransaction handleUpdateObject:currentViewModelObject
+//                                          forCollectionKey:collectionKey
+//                                              withMetadata:metadata
+//                                                     rowid:rowid];
+//                    else
+//                        [extTransaction handleInsertObject:currentViewModelObject
+//                                          forCollectionKey:collectionKey
+//                                              withMetadata:metadata
+//                                                     rowid:rowid];
+//
+//                }
+//            }
         }
     }
 }
@@ -643,8 +652,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
     if (shouldProcessDelete) {
         NSSet *deletionClasses = viewModel->setup.deletionClasses;
 
-        if ([deletionClasses containsObject:collectionKey.collection]) {
-            [self removeViewModelForRowId:rowid key:collectionKey.key];
+        if ([deletionClasses containsObject:collection]) {
+            [self removeViewModelRowWithPrimaryKey:key inCollection:viewModel.registeredName];
+            NSLog(@"Deleting %@ in %@", collection, deletionClasses);
         }
     }
 }
@@ -657,17 +667,17 @@ static NSString *const ExtKey_version_deprecated = @"version";
 {
 	YDBLogAutoTrace();
 
-	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
-
-	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
-	if (allowedCollections && ![allowedCollections isAllowed:collection])
-	{
-		return;
-	}
-
-    [keys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
-        [self removeViewModelForRowId:rowids[idx] key:key];
-    }];
+//	__unsafe_unretained YapDatabaseViewModel *viewModel = viewModelConnection->viewModel;
+//
+//	__unsafe_unretained YapWhitelistBlacklist *allowedCollections = viewModel->options.allowedCollections;
+//	if (allowedCollections && ![allowedCollections isAllowed:collection])
+//	{
+//		return;
+//	}
+//
+//    [keys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
+//        [self removeViewModelRowWithPrimaryKey:key inCollection:collection];
+//    }];
 }
 
 /**
@@ -678,7 +688,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 {
 	YDBLogAutoTrace();
 
-	[self removeAllRowids];
+//	[self removeAllRowids];
 }
 
 - (int64_t)rowIdForRowWithPrimaryKey:(NSString *)primaryKey
@@ -692,43 +702,40 @@ static NSString *const ExtKey_version_deprecated = @"version";
     return rowId;
 }
 
-- (void)removeViewModelForRowId:(int64_t)rowid key:(NSString *)key {
-    id currentViewModelObject = [self viewModelObjectForPrimaryKey:key];
-
-    if (currentViewModelObject) {
-        rowid = [self rowIdForRowWithPrimaryKey:key];
-        [self removeRowid:rowid];
-    }
-}
 
 - (id)viewModelObjectForPrimaryKey:(NSString *)primaryKey {
-    YapDatabaseQuery *query = [YapDatabaseQuery queryWithFormat:@"WHERE key=?", primaryKey];
-
+//    YapDatabaseQuery *query = [YapDatabaseQuery queryWithFormat:@"WHERE key=?", primaryKey];
+////
+//    __block id object;
+//    [self _enumerateRowidsMatchingQuery:query usingBlock:^(int64_t rowid, BOOL *stop) {
+//		object = [databaseTransaction objectForKey:primaryKey inCollection:nil withRowid:rowid];
+//
+//        sqlite3_stmt *statement = [viewModelConnection getDataForRowidStatement];
+//        if (statement != NULL)
+//        {
+//            sqlite3_bind_int64(statement, 1, rowid);
+//
+//            int status = sqlite3_step(statement);
+//            if (status == SQLITE_ROW)
+//            {
+////                if (connection->needsMarkSqlLevelSharedReadLock)
+////                    [connection markSqlLevelSharedReadLockAcquired];
+//
+//                const void *blob = sqlite3_column_blob(statement, 0);
+//                int blobSize = sqlite3_column_bytes(statement, 0);
+//                
+//                // Performance tuning:
+//                // Use dataWithBytesNoCopy to avoid an extra allocation and memcpy.
+//                NSData *data = [NSData dataWithBytesNoCopy:(void *)blob length:blobSize freeWhenDone:NO];
+//                object = viewModelConnection->databaseConnection->database->objectDeserializer(nil, primaryKey, data);
+//            }
+//        }
+//        *stop = YES;
+//    }];
+//    return object;
     __block id object;
-    [self _enumerateRowidsMatchingQuery:query usingBlock:^(int64_t rowid, BOOL *stop) {
-		object = [databaseTransaction objectForKey:primaryKey inCollection:nil withRowid:rowid];
-
-        sqlite3_stmt *statement = [viewModelConnection getDataForRowidStatement];
-        if (statement != NULL)
-        {
-            sqlite3_bind_int64(statement, 1, rowid);
-
-            int status = sqlite3_step(statement);
-            if (status == SQLITE_ROW)
-            {
-//                if (connection->needsMarkSqlLevelSharedReadLock)
-//                    [connection markSqlLevelSharedReadLockAcquired];
-
-                const void *blob = sqlite3_column_blob(statement, 0);
-                int blobSize = sqlite3_column_bytes(statement, 0);
-                
-                // Performance tuning:
-                // Use dataWithBytesNoCopy to avoid an extra allocation and memcpy.
-                NSData *data = [NSData dataWithBytesNoCopy:(void *)blob length:blobSize freeWhenDone:NO];
-                object = viewModelConnection->databaseConnection->database->objectDeserializer(nil, primaryKey, data);
-            }
-        }
-        *stop = YES;
+    [[viewModelConnection->viewModel->setup.storageDatabase newConnection] readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+        object = [transaction objectForKey:primaryKey inCollection:viewModelConnection->viewModel.registeredName];
     }];
     return object;
 }
